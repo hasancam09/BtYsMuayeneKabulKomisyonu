@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MEB YEĞİTEK - TİP2 & TİP3 Muayene ve Kabul Komisyonu Kontrol Rehberi</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    .check-card {
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .check-card.state-on {
+      background-color: #ecfdf5;
+      border-color: #10b981;
+      box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.16);
+    }
+    .check-card.state-off {
+      background-color: #ffffff;
+      border-color: #e2e8f0;
+    }
+    .toggle-btn {
+      transition: all 0.2s ease-in-out;
+    }
+    .toggle-btn.on {
+      background-color: #059669;
+      border-color: #047857;
+      color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+    }
+    .toggle-btn.off {
+      background-color: #e2e8f0;
+      border-color: #cbd5e1;
+      color: #475569;
+    }
+    .toggle-knob {
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .toggle-btn.on .toggle-knob {
+      transform: translateX(36px);
+    }
+    .toggle-btn.off .toggle-knob {
+      transform: translateX(0px);
+    }
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #printAreaContainer, #printAreaContainer * {
+        visibility: visible !important;
+      }
+      #printAreaContainer {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        display: block !important;
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Üst Başlık / Header -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <div class="flex items-start sm:items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center shrink-0 text-emerald-400 font-bold text-lg">
+          ✓
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              MEB YEĞİTEK • 2026 Teknik Şartnamesi
+            </span>
+            <span class="text-xs text-slate-400">1200 BT Lab (TİP2) & 505 Yenilikçi Sınıf (TİP3)</span>
+          </div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-white mt-0.5">
+            Muayene ve Kabul Komisyonu Saha Kontrol & Denetim Sistemi
+          </h1>
+        </div>
+      </div>
+
+      <!-- Üst Aksiyon Butonları -->
+      <div class="flex flex-wrap items-center gap-2 no-print">
+        <button id="btnOpenRefModal" type="button" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+          <span>📋</span> Linye, Kurgu & Çanta Tabloları
+        </button>
+        <button id="btnOpenReportModal" type="button" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition flex items-center gap-1.5">
+          <span>📄</span> Denetim Tutanağı & Raporu
+        </button>
+        <a href="https://docs.google.com/document/d/1uYPQeKzjxPZzpwMjM4p47-3oM6UXtWLK/edit" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 transition flex items-center gap-1">
+          <span>🔗</span> Şartnameyi Aç
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Ana İçerik -->
+  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex-1 space-y-6">
+
+    <!-- Okul / Denetim Künyesi ve Kurulum Tipi Seçimi -->
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label for="inputSchoolName" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
+            Okul / Kurum Adı & İl-İlçe
+          </label>
+          <input id="inputSchoolName" type="text" placeholder="Örn: Atatürk Anadolu Lisesi - Ankara/Çankaya" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+        </div>
+
+        <div>
+          <label for="selectClassType" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
+            Denetlenen Sınıf Tipi
+          </label>
+          <select id="selectClassType" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="ALL">Tümü (TİP 2 + TİP 3 Tüm Maddeler)</option>
+            <option value="TIP2">TİP 2 — BT Laboratuvarı (18+1 Bilgisayar)</option>
+            <option value="TIP3">TİP 3 — Yenilikçi Sınıf (8 AIO + 12 Laptop + 3D + ET)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="selectTip3Scenario" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
+            TİP 3 Sınıf Kurgusu (Madde 5.8)
+          </label>
+          <select id="selectTip3Scenario" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <option value="ALL">Tüm Kurgular (Genel Görünüm)</option>
+            <option value="KURGU1">Kurgu 1: FATİH Kanalı Var + PoE Switch Var (4 Priz)</option>
+            <option value="KURGU2">Kurgu 2: FATİH Kanalı Yok + PoE Switch Var (5 Priz + Kanal)</option>
+            <option value="KURGU3">Kurgu 3: FATİH Kanalı Var + PoE Switch Yok (5 Priz + Adaptör)</option>
+            <option value="KURGU4">Kurgu 4: FATİH Kanalı Yok + PoE Switch Yok (6 Priz + Kanal + Adaptör)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Muayene ve Kabul Komisyonu Üyeleri (3 Ayrı Bölüm) -->
+      <div class="mt-4 pt-4 border-t border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+          <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+            <span>👥</span> Muayene ve Kabul Komisyonu Üyeleri (3 Ayrı Bölüm — PDF Sonunda Yer Alır)
+          </span>
+          <span class="text-[11px] text-slate-500">Madde 7.3: Teknik Öğretmen (Elektrik, Elektronik, Bilişim), Tekniker, Teknisyen</span>
+        </div>
+        <input id="inputCommission" type="hidden" value="" />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <!-- 1. Komisyon Başkanı -->
+          <div class="bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">1. Komisyon Başkanı</span>
+              <span class="text-[11px] text-slate-400">PDF İmza #1</span>
+            </div>
+            <div>
+              <label for="inputMember1Name" class="block text-[11px] font-medium text-slate-600 mb-0.5">Adı Soyadı</label>
+              <input id="inputMember1Name" type="text" placeholder="Örn: Ahmet YILMAZ" class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="inputMember1Title" class="block text-[11px] font-medium text-slate-600 mb-0.5">Unvanı / Görevi</label>
+              <input id="inputMember1Title" type="text" placeholder="Örn: 1. Komisyon Başkanı" class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <!-- 1. Uzman Üye -->
+          <div class="bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded">1. Uzman Üye</span>
+              <span class="text-[11px] text-slate-400">PDF İmza #2</span>
+            </div>
+            <div>
+              <label for="inputMember2Name" class="block text-[11px] font-medium text-slate-600 mb-0.5">Adı Soyadı</label>
+              <input id="inputMember2Name" type="text" placeholder="Örn: Burak KAYA" class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="inputMember2Title" class="block text-[11px] font-medium text-slate-600 mb-0.5">Unvanı / Branşı</label>
+              <input id="inputMember2Title" type="text" placeholder="Örn: 1. Uzman Üye (Bilişim Tek. Öğrt.)" class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+
+          <!-- 2. Uzman Üye -->
+          <div class="bg-slate-50 rounded-xl border border-slate-200 p-3 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-purple-800 bg-purple-100 px-2 py-0.5 rounded">2. Uzman Üye</span>
+              <span class="text-[11px] text-slate-400">PDF İmza #3</span>
+            </div>
+            <div>
+              <label for="inputMember3Name" class="block text-[11px] font-medium text-slate-600 mb-0.5">Adı Soyadı</label>
+              <input id="inputMember3Name" type="text" placeholder="Örn: Cem DEMİR" class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label for="inputMember3Title" class="block text-[11px] font-medium text-slate-600 mb-0.5">Unvanı / Branşı</label>
+              <input id="inputMember3Title" type="text" placeholder="Örn: 2. Uzman Üye (Elektrik-Elektronik Öğrt.)" class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kurgu Bilgi Bandı (TİP3 seçildiğinde dinamik açıklama) -->
+      <div id="scenarioInfoBanner" class="mt-3 hidden rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-2.5 text-xs text-emerald-900 flex items-center justify-between gap-2">
+        <div id="scenarioInfoText" class="font-medium"></div>
+        <span class="px-2 py-0.5 rounded bg-emerald-200/70 text-emerald-900 font-semibold shrink-0">Madde 5.8</span>
+      </div>
+    </section>
+
+    <!-- Canlı İlerleme ve Özet KPI Kartları -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Toplam Kontrol Noktası -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Aktif Kontrol Maddesi</p>
+          <p id="statTotal" class="text-2xl font-bold text-slate-900 mt-1">0</p>
+          <p id="statScopeSub" class="text-xs text-slate-500 mt-0.5">Şartnameye dayalı kriter</p>
+        </div>
+        <div class="w-11 h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-lg">
+          📋
+        </div>
+      </div>
+
+      <!-- Onaylanan (ON - Yeşil) -->
+      <div class="bg-emerald-50/70 rounded-2xl border border-emerald-300 p-4 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-emerald-800">Onaylanan (ON - Yeşil)</p>
+          <div class="flex items-baseline gap-2 mt-1">
+            <p id="statOnCount" class="text-2xl font-bold text-emerald-700">0</p>
+            <span id="statOnPercent" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900">%0</span>
+          </div>
+          <p class="text-xs text-emerald-700 mt-0.5">Komisyonca uygun bulunan</p>
+        </div>
+        <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+          ON
+        </div>
+      </div>
+
+      <!-- Bekleyen (OFF) -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Kontrol Bekleyen (OFF)</p>
+          <p id="statOffCount" class="text-2xl font-bold text-amber-600 mt-1">0</p>
+          <p class="text-xs text-slate-500 mt-0.5">Henüz onaylanmamış madde</p>
+        </div>
+        <div class="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-sm">
+          OFF
+        </div>
+      </div>
+
+      <!-- Genel Kabul Durumu ve İlerleme Çubuğu -->
+      <div id="cardAcceptanceStatus" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Muayene Kabul Durumu</p>
+          <span id="badgeAcceptance" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
+            DENETİM SÜRÜYOR
+          </span>
+        </div>
+        <div class="mt-2">
+          <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+            <div id="progressBarFill" class="h-full bg-emerald-600 transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <p id="textAcceptanceHint" class="text-xs text-slate-500 mt-1.5">
+            Tüm maddeler ON (Yeşil) olduğunda geçici kabule hazır olur.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kritik Süre, Ödeme ve Ceza Uyarı Şeridi (Şartname Bölüm 7) -->
+    <section class="bg-slate-900 text-slate-100 rounded-2xl p-4 shadow-sm">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <span class="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold uppercase tracking-wide shrink-0">
+            Kritik İdari & SLA Kuralları
+          </span>
+          <p class="text-xs sm:text-sm text-slate-300">
+            Komisyon üyelerinin tutanak ve hakediş kontrolünde dikkat etmesi gereken yasal sınırlar:
+          </p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+          <div class="bg-slate-800/90 border border-slate-700 rounded-lg px-3 py-1.5">
+            <span class="text-slate-400 block">Keşif / Kurulum Süresi</span>
+            <strong class="text-white">100 Gün / 220 Takvim Günü</strong>
+          </div>
+          <div class="bg-slate-800/90 border border-slate-700 rounded-lg px-3 py-1.5">
+            <span class="text-slate-400 block">Ara Ödeme Barajı</span>
+            <strong class="text-emerald-400">850 Okul (En az 600 TİP2)</strong>
+          </div>
+          <div class="bg-slate-800/90 border border-slate-700 rounded-lg px-3 py-1.5">
+            <span class="text-slate-400 block">Garanti & Arıza SLA</span>
+            <strong class="text-white">2 Yıl • En Geç 7 İş Günü</strong>
+          </div>
+          <div class="bg-slate-800/90 border border-slate-700 rounded-lg px-3 py-1.5">
+            <span class="text-slate-400 block">SLA / Gecikme Cezası</span>
+            <strong class="text-amber-300">Asg.Ücr. %3/gün • %0,05/gün</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filtreleme, Arama, Kategori Sekmeleri ve Toplu ON/OFF Araç Çubuğu -->
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-4 no-print">
+      <!-- Kategori Sekmeleri -->
+      <div id="categoryTabs" class="flex flex-wrap gap-1.5">
+        <!-- JS ile doldurulur -->
+      </div>
+
+      <!-- Arama, Durum Filtresi ve Toplu Butonlar -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-1">
+          <!-- Arama Kutusu -->
+          <div class="relative flex-1">
+            <input id="inputSearch" type="text" placeholder="Şartname maddesi, ölçü veya anahtar kelime ara (örn: 80 cm, CAT6, 30mA, N2XH, buat, 78 cm)..." class="w-full pl-9 pr-8 py-2 text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <span class="absolute left-3 top-2.5 text-slate-400 text-sm">🔍</span>
+            <button id="btnClearSearch" type="button" class="hidden absolute right-2.5 top-2 text-slate-400 hover:text-slate-600 text-sm px-1">✕</button>
+          </div>
+
+          <!-- ON / OFF Durum Filtresi -->
+          <div class="inline-flex rounded-xl border border-slate-300 p-0.5 bg-slate-100 shrink-0">
+            <button type="button" data-status-filter="ALL" class="status-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-sm">
+              Tümü
+            </button>
+            <button type="button" data-status-filter="OFF" class="status-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900">
+              Bekleyen (OFF)
+            </button>
+            <button type="button" data-status-filter="ON" class="status-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-700 hover:text-emerald-900">
+              Onaylı (ON • Yeşil)
+            </button>
+          </div>
+        </div>
+
+        <!-- Toplu ON / OFF Butonları -->
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="btnTurnVisibleOn" type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition flex items-center gap-1.5">
+            <span>✓</span> Listelenenleri ON (Yeşil) Yap
+          </button>
+          <button id="btnTurnAllOff" type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-200 hover:bg-slate-300 text-slate-700 transition flex items-center gap-1.5">
+            <span>↺</span> Tümünü OFF Yap (Sıfırla)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kontrol Maddeleri Listesi -->
+    <section id="checklistContainer" class="space-y-3">
+      <!-- JS ile dinamik render edilir -->
+    </section>
+
+  </main>
+
+  <!-- Alt Bilgi / Footer -->
+  <footer class="bg-white border-t border-slate-200 mt-10 py-4 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span>T.C. Millî Eğitim Bakanlığı YEĞİTEK • 1200 BT Lab (TİP2) ve 505 Yenilikçi Sınıf (TİP3) Altyapısı Kurulum İşi Teknik Şartnamesi (2026)</span>
+      <a href="https://docs.google.com/document/d/1uYPQeKzjxPZzpwMjM4p47-3oM6UXtWLK/edit" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline font-medium">
+        Orijinal Teknik Şartname Belgesi ↗
+      </a>
+    </div>
+  </footer>
+
+  <!-- MODAL 1: Linye Dağılımı, TİP3 4'lü Kurgu ve Saha Kontrol Çantası Referans Tabloları -->
+  <div id="modalRefTables" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold">Şartname Hızlı Referans Tabloları (Linye, Kurgu & Kontrol Çantası)</h2>
+          <p class="text-xs text-slate-400">Muayene ve Kabul Komisyonu saha ölçüm cetvelleri</p>
+        </div>
+        <button id="btnCloseRefModal" type="button" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold">✕</button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-6 text-xs sm:text-sm">
+        <!-- Tablo 1: TİP 2 ve TİP 3 Linye Dağılımları -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <div class="bg-slate-100 px-4 py-2.5 font-bold text-slate-800 border-b border-slate-200">
+              TİP 2 (18+1 BT Lab) Linye Dağılım Tablosu (Madde 4.7.5.2.10)
+            </div>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-xs text-slate-600">
+                  <th class="p-2.5 font-semibold">Linye Adı</th>
+                  <th class="p-2.5 font-semibold">Sigorta / Kablo</th>
+                  <th class="p-2.5 font-semibold">Bağlı Prizler</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 text-xs">
+                <tr>
+                  <td class="p-2.5 font-semibold text-emerald-800">1. Linye</td>
+                  <td class="p-2.5">1x16A B Tipi 6kA • 3x2,5mm²</td>
+                  <td class="p-2.5">1-2-3-4-5-6 no'lu öğrenci PC (6 priz)</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-semibold text-emerald-800">2. Linye</td>
+                  <td class="p-2.5">1x16A B Tipi 6kA • 3x2,5mm²</td>
+                  <td class="p-2.5">7-8-9-10-11-12 no'lu öğrenci PC (6 priz)</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-semibold text-emerald-800">3. Linye</td>
+                  <td class="p-2.5">1x16A B Tipi 6kA • 3x2,5mm²</td>
+                  <td class="p-2.5">13-14-15-16-17-18 no'lu öğrenci PC (6 priz)</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-semibold text-emerald-800">4. Linye</td>
+                  <td class="p-2.5">1x16A B Tipi 6kA • 3x2,5mm²</td>
+                  <td class="p-2.5">Öğretmen (2 priz) ve Switch beslemesi</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="border border-slate-200 rounded-xl overflow-hidden">
+            <div class="bg-slate-100 px-4 py-2.5 font-bold text-slate-800 border-b border-slate-200">
+              TİP 3 (Yenilikçi Sınıf) Linye Dağılım Tablosu (Madde 5.13.2.7)
+            </div>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-xs text-slate-600">
+                  <th class="p-2.5 font-semibold">Linye Adı</th>
+                  <th class="p-2.5 font-semibold">Pano Çıkış Yönü</th>
+                  <th class="p-2.5 font-semibold">Bağlı Prizler</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 text-xs">
+                <tr>
+                  <td class="p-2.5 font-semibold text-emerald-800">1. Linye</td>
+                  <td class="p-2.5">Pano Alt Tarafı</td>
+                  <td class="p-2.5">1-2-3-4-5-6 no'lu enerji prizleri (AIO PC'ler için)</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-semibold text-emerald-800">2. Linye</td>
+                  <td class="p-2.5">Pano Alt Tarafı</td>
+                  <td class="p-2.5">7-8-9-10-11-12 no'lu enerji prizleri (AIO PC'ler için)</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-semibold text-emerald-800">3. Linye</td>
+                  <td class="p-2.5">Pano Üst Tarafı</td>
+                  <td class="p-2.5">PC1, PC2, PC3 enerji prizleri (Dizüstü şarj dolabı)</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-semibold text-emerald-800">4. Linye</td>
+                  <td class="p-2.5">Pano Üst Tarafı</td>
+                  <td class="p-2.5">ET (Etkileşimli Tahta), AP ve 3D Yazıcı</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tablo 2: TİP 3 4'lü Kurgu Özeti -->
+        <div class="border border-slate-200 rounded-xl overflow-hidden">
+          <div class="bg-slate-100 px-4 py-2.5 font-bold text-slate-800 border-b border-slate-200">
+            TİP 3 (Yenilikçi Sınıf) 4 Farklı Kurguya Göre Priz, Kanal ve Adaptör Kontrol Tablosu (Madde 5.8 & 5.11)
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-slate-600">
+                  <th class="p-2.5 font-semibold">Kurgu</th>
+                  <th class="p-2.5 font-semibold">Mevcut Durum</th>
+                  <th class="p-2.5 font-semibold">AIO PC Duvarı</th>
+                  <th class="p-2.5 font-semibold">ET Duvarı Prizleri</th>
+                  <th class="p-2.5 font-semibold">İlave Birim Fiyat Kalemi (Hakedişe Esas)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr>
+                  <td class="p-2.5 font-bold text-slate-900">Kurgu 1 (EK-10)</td>
+                  <td class="p-2.5">FATİH Kanalı VAR + PoE Switch VAR</td>
+                  <td class="p-2.5">12 Priz (50 cm arayla)</td>
+                  <td class="p-2.5">3 Dizüstü + 1 (3D Yazıcı) = <strong>4 Priz</strong></td>
+                  <td class="p-2.5 text-slate-500">İlave priz/kanal yok (Mevcut FATİH kanalı kullanılır)</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-bold text-slate-900">Kurgu 2 (EK-11)</td>
+                  <td class="p-2.5">FATİH Kanalı YOK + PoE Switch VAR</td>
+                  <td class="p-2.5">12 Priz (50 cm arayla)</td>
+                  <td class="p-2.5">3 Dizüstü + 1 (3D) + 1 ET = <strong>5 Priz</strong></td>
+                  <td class="p-2.5 text-emerald-800 font-medium">+1 adet ET Prizi + Kullanılan PVC Kanal Metrajı</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-bold text-slate-900">Kurgu 3 (EK-12)</td>
+                  <td class="p-2.5">FATİH Kanalı VAR + PoE Switch YOK</td>
+                  <td class="p-2.5">12 Priz (50 cm arayla)</td>
+                  <td class="p-2.5">3 Dizüstü + 1 (3D) + 1 AP = <strong>5 Priz</strong></td>
+                  <td class="p-2.5 text-emerald-800 font-medium">+1 adet AP Prizi + 1 adet AP Adaptörü (12V-48V)</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-bold text-slate-900">Kurgu 4 (EK-13)</td>
+                  <td class="p-2.5">FATİH Kanalı YOK + PoE Switch YOK</td>
+                  <td class="p-2.5">12 Priz (50 cm arayla)</td>
+                  <td class="p-2.5">3 Dizüstü + 1 (3D) + 1 ET + 1 AP = <strong>6 Priz</strong></td>
+                  <td class="p-2.5 text-emerald-800 font-medium">+1 ET Prizi + 1 AP Prizi + 1 AP Adaptörü + PVC Kanal Metrajı</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tablo 3: Merkezi Komisyon Saha Kontrol Çantası (Madde 3.21) -->
+        <div class="border border-slate-200 rounded-xl overflow-hidden">
+          <div class="bg-slate-100 px-4 py-2.5 font-bold text-slate-800 border-b border-slate-200">
+            Merkezi Komisyonlar İçin Teslim Edilecek Saha Kontrol Çantası İçeriği (Madde 3.21)
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-slate-600">
+                  <th class="p-2.5 font-semibold">Ürün Adı</th>
+                  <th class="p-2.5 font-semibold">Adet</th>
+                  <th class="p-2.5 font-semibold">Şartnamedeki Zorunlu Teknik Özellik</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr>
+                  <td class="p-2.5 font-medium">Pense, Yan Keski, Kargaburnu</td>
+                  <td class="p-2.5">1'er Adet</td>
+                  <td class="p-2.5">Özel alaşımlı çelikten imal edilmiş, en az 160 mm boyunda ve kesici ağızları indüksiyonla sertleştirilmiş olmalıdır.</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-medium">Kontrol Kalemi</td>
+                  <td class="p-2.5">2 Adet</td>
+                  <td class="p-2.5">135 mm ve 190 mm uzunluklarında krom vanadyum, nikel kaplı düz uçlu olmalıdır.</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-medium">Elektrik İzolasyon Bandı</td>
+                  <td class="p-2.5">5 Adet</td>
+                  <td class="p-2.5">15mm x 10m ebatlarında olmalıdır.</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-medium">Düz Tornavida & Yıldız Tornavida</td>
+                  <td class="p-2.5">2'şer Adet</td>
+                  <td class="p-2.5">Krom vanadyum, krom kaplı, ucu siyah oksit kaplı ve uzunluğu en az 165 mm olmalıdır.</td>
+                </tr>
+                <tr>
+                  <td class="p-2.5 font-medium text-emerald-800">Kaçak Akım Röle (RCD) Test Cihazı</td>
+                  <td class="p-2.5 font-bold">1 Adet</td>
+                  <td class="p-2.5">Doğrudan prize takılabilen dijital göstergeli olmalıdır.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Denetim Tutanağı & Raporu -->
+  <div id="modalReport" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold">Muayene ve Kabul Komisyonu Denetim Özeti & PDF Tutanağı</h2>
+          <p class="text-xs text-slate-400">PDF sonunda 1. Komisyon Başkanı, 1. Uzman Üye ve 2. Uzman Üye imza alanları yer alır</p>
+        </div>
+        <button id="btnCloseReportModal" type="button" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold">✕</button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-5 flex-1 bg-slate-100">
+        <!-- Görsel A4 PDF Tutanak Önizlemesi -->
+        <div id="pdfPreviewVisual" class="bg-white border border-slate-300 rounded-xl shadow-sm p-6 sm:p-8 text-slate-900 space-y-5">
+          <!-- JS ile doldurulur -->
+        </div>
+
+        <!-- Düz Metin Önizlemesi -->
+        <details class="bg-white border border-slate-200 rounded-xl p-3">
+          <summary class="text-xs font-semibold text-slate-600 cursor-pointer select-none">
+            Düz Metin Rapor Görünümü (Panoya Kopyalama İçin)
+          </summary>
+          <pre id="reportTextOutput" class="mt-3 bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs font-mono whitespace-pre-wrap text-slate-800 leading-relaxed"></pre>
+        </details>
+      </div>
+
+      <div class="px-5 py-3.5 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+        <span id="copyFeedbackText" class="text-xs font-semibold text-emerald-700"></span>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="btnCopyReport" type="button" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-200 hover:bg-slate-300 text-slate-800 transition">
+            📋 Raporu Panoya Kopyala
+          </button>
+          <button id="btnPrintReport" type="button" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition">
+            🖨️ Sayfayı Yazdır / PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Yazdırma (@media print) Katmanı -->
+  <div id="printAreaContainer" class="hidden"></div>
+
+  <!-- Bildirim / Toast -->
+  <div id="toastNotification" class="fixed bottom-4 right-4 z-50 hidden px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-medium shadow-lg border border-slate-700"></div>
+
+  <script>
+    // Kategori Tanımları
+    const CATEGORIES = [
+      { id: 'ALL', name: 'Tümü', icon: '📌' },
+      { id: 'GENEL', name: '1. Genel & Sertifikalar', icon: '📑' },
+      { id: 'KANAL', name: '2. PVC Kanal & Montaj', icon: '📏' },
+      { id: 'ENERJI', name: '3. Enerji & Pano', icon: '⚡' },
+      { id: 'DATA', name: '4. Ağ (Data) & Kabinet', icon: '🌐' },
+      { id: 'TIP2', name: '5. TİP 2 (BT Lab 18+1)', icon: '🖥️' },
+      { id: 'TIP3', name: '6. TİP 3 (Yenilikçi Sınıf)', icon: '🚀' },
+      { id: 'KABUL', name: '7. PYS, Tutanak & SLA', icon: '✅' }
+    ];
+
+    // Teknik Şartnameye Birebir Dayalı 42 Kontrol Maddesi
+    const CHECKLIST_ITEMS = [
+      // 1. GENEL HÜKÜMLER, BELGE VE SERTİFİKALAR
+      {
+        id: 'G-01',
+        category: 'GENEL',
+        scope: 'BOTH',
+        clause: 'Madde 3.7, 3.12, 3.17',
+        title: 'Marka/Model Uyumu ve İDARE Ekspertiz Onayı',
+        critical: true,
+        criteria: 'Okulda kullanılan tüm kablolar, kanallar, prizler ve şalt malzemelerinin üzerinde sözleşmede taahhüt edilen ve Ekspertiz Muayenesinde İDARE tarafından onaylanan marka/model yazılı olmalıdır. Markasız malzeme kesinlikle kabul edilmez.'
+      },
+      {
+        id: 'G-02',
+        category: 'GENEL',
+        scope: 'BOTH',
+        clause: 'Madde 3.5',
+        title: 'Bağımsız Laboratuvar CAT6 Sertifikaları ve Aynı Üretici Şartı',
+        critical: true,
+        criteria: 'Veri kablosu, patch kablo ve keystone jack ürünleri en az CAT6 sınıfında ve aynı üreticiye ait olmalıdır. Sözleşme tarihinden önce UL, Delta/Force veya ETL bağımsız laboratuvarlarından alınmış geçerli sertifikalar (ANSI/TIA-568-2.D, ISO/IEC 11801-1:2017, TS EN50173-1, EN50399, EN50575) doğrulanmalıdır.'
+      },
+      {
+        id: 'G-03',
+        category: 'GENEL',
+        scope: 'BOTH',
+        clause: 'Madde 3.13, 4.7.1.3, 5.12.1.2',
+        title: 'Alev İletmeyen, Duman Çıkarmayan (LSOH/HFFR) ve CPR Sertifikalı Malzeme',
+        critical: true,
+        criteria: 'Kurulumda kullanılan tüm kablolar ve kablo kanalları alev iletmeyen, duman çıkarmayan (Halojensiz - LSOH/HFFR) tipte olmalıdır. CAT6 UTP kabloların CPR test raporu en az Dca, s2, d2, a1 şartlarını sağlamalıdır.'
+      },
+      {
+        id: 'G-04',
+        category: 'GENEL',
+        scope: 'BOTH',
+        clause: 'Madde 3.3, 3.11',
+        title: 'Plastik Kılıflı / Sarmal Etiketleme (Elle Yazı ve İzole Bant Yasağı)',
+        critical: true,
+        criteria: 'Tüm şalt malzemeleri, linyeler, data ve enerji prizleri Kontrol Teşkilatı onaylı örneğe uygun sıralı numara ile etiketlenmelidir. Etiketler kesinlikle elle yazılmamalı, izole bant kullanılmamalı; zamanla silinmeyecek/düşmeyecek plastik kılıf içinde veya sarmal etiket olmalıdır.'
+      },
+      {
+        id: 'G-05',
+        category: 'GENEL',
+        scope: 'BOTH',
+        clause: 'Madde 3.15',
+        title: 'Pano İç Kapağında Yüklenici Arıza İletişim Etiketi',
+        critical: false,
+        criteria: 'Kurulum tamamlanan okullarda oluşabilecek arızalar için YÜKLENİCİ firma adını ve iletişim bilgilerini içeren dayanıklı etiket sınıf enerji panosu iç kapağına yapıştırılmış olmalıdır.'
+      },
+      {
+        id: 'G-06',
+        category: 'GENEL',
+        scope: 'BOTH',
+        clause: 'Madde 3.10, 3.22.11',
+        title: 'Duvar Delinmesi, Alçı, Sıva ve Boya Onarımlarının Tamamlanması',
+        critical: false,
+        criteria: 'Kablo kanalı montajı ve duvar geçişlerinin delinmesi sırasında okul binasına verilen zararlar (alçı, sıva ve boya işleri) en az eskisi gibi olacak şekilde bedelsiz onarılmış ve boyanmış olmalıdır.'
+      },
+      {
+        id: 'G-07',
+        category: 'GENEL',
+        scope: 'BOTH',
+        clause: 'Madde 3.5, 3.8, 3.23',
+        title: 'Uçtan Uca Elektronik Network Test Raporları ve Türkçe Dokümanlar',
+        critical: true,
+        criteria: 'Kurulumu yapılan data hatlarının ve patch kabloların uçtan uca elektronik network test raporları ile ürünlerin temel işlev ve Türkçe çalıştırma talimatları teslim edilmelidir.'
+      },
+
+      // 2. PVC KABLO TAŞIYICI KANALLAR VE MONTAJ
+      {
+        id: 'K-01',
+        category: 'KANAL',
+        scope: 'BOTH',
+        clause: 'Madde 3.2, 5.10',
+        title: 'PVC Kablo Kanalı Yerden Yüksekliği (Tam 80 cm)',
+        critical: true,
+        criteria: 'Sınıf içi altyapı ağ ve enerji PVC kanallarının alt noktası zeminden tam 80 cm yükseklikte olacak şekilde teraziye alınarak monte edilmiş olmalıdır.'
+      },
+      {
+        id: 'K-02',
+        category: 'KANAL',
+        scope: 'BOTH',
+        clause: 'Madde 3.22.5, 5.7',
+        title: 'PVC Kanal Ölçüleri (100x50 mm / 40x25 mm) ve Et Kalınlığı (≥2 mm)',
+        critical: true,
+        criteria: 'Sınıf içi kanallar en az 100x50 mm (±%0,5) ve et kalınlığı en az 2 mm (±%5); koridor tali panodan sınıfa gelen enerji kanalı 40x25 mm (±%0,5) ve et kalınlığı en az 0,9 mm (±%15) olmalıdır. Kablolar kanal içinde sıkışmamalı ve taşmamalıdır.'
+      },
+      {
+        id: 'K-03',
+        category: 'KANAL',
+        scope: 'BOTH',
+        clause: 'Madde 3.22.1, 3.22.2, 3.22.8',
+        title: 'Kanal TSE 50085-2-1, IP40, UL-94 V-0 ve RoHS Kalite Belgeleri',
+        critical: false,
+        criteria: 'Kablo kanalları TSE 50085-2-1 ve ISO 9001-2015 belgeli, IP40 koruma sınıflı, beyaz (RAL 9003-9020), UL-94 V-0 alev iletmezlik özellikli ve bağımsız kuruluşlardan (ETL, UL veya VDE) RoHS belgeli olmalıdır.'
+      },
+      {
+        id: 'K-04',
+        category: 'KANAL',
+        scope: 'BOTH',
+        clause: 'Madde 3.22.6, 3.22.7',
+        title: 'Kanal İçi Seperatör (Ayıraç) ve İçten Kilitlenebilir Tırnaklı Kapak',
+        critical: true,
+        criteria: 'Enerji ve data kablosunun birlikte geçtiği kanallarda kuvvetli ve zayıf akımı ayıran seperatör (ayıraç) mutlaka bulunmalı; kanal kapakları içten kilitlenebilir tırnaklı yapıda olmalıdır.'
+      },
+      {
+        id: 'K-05',
+        category: 'KANAL',
+        scope: 'BOTH',
+        clause: 'Madde 3.6, 3.22.3, 3.22.6, 3.22.9',
+        title: 'En Fazla 25 cm Aralıkla Çapraz Dübel & Pullu Vida (Silikon Yasağı)',
+        critical: true,
+        criteria: 'Kanallar duvara en fazla 25 cm aralıkla çapraz dübel ve pullu vida kullanılarak sabitlenmelidir. İç/dış köşe, 90° ve T dirsek orijinal aparatları kanala tam oturmalı; montajda silikon, yapıştırıcı veya aparat dışı vida kesinlikle kullanılmamalıdır.'
+      },
+      {
+        id: 'K-06',
+        category: 'KANAL',
+        scope: 'BOTH',
+        clause: 'Madde 3.22.4',
+        title: 'Kanal Üzerindeki Marka Yapışkanlı Folyo ve Geçici Etiketlerin Sökülmesi',
+        critical: false,
+        criteria: '100x50 mm kablo kanalları marka folyolu olarak gelmeli ancak okulun kablolaması teslim edilirken kanallar üzerindeki tüm koruyucu marka folyoları ve geçici etiketler tamamen sökülmüş olmalıdır.'
+      },
+      {
+        id: 'K-07',
+        category: 'KANAL',
+        scope: 'BOTH',
+        clause: 'Madde 3.22.10, 4.7.1.4, 5.12.1.3, EK-8',
+        title: 'Kalorifer Peteği Geçişleri (40x40 mm) ve Duvar Deliklerinde Spiral Boru',
+        critical: true,
+        criteria: 'Petek ile cam arasına 100x50 mm kanal sığmıyorsa; enerji kablosu petek-cam arasından en az 40x40 mm PVC kanal ile, data kablosu zemin-petek arasından en az 40x40 mm kanal ile (veya petek arkasından görünmeyecek sert PVC/spiral boru ile) geçirilmelidir. Duvar ve radyatör geçişlerinde çıplak kablo bırakılmamalıdır.'
+      },
+
+      // 3. ENERJİ ALTYAPISI, PANO VE PRİZLER
+      {
+        id: 'E-01',
+        category: 'ENERJI',
+        scope: 'BOTH',
+        clause: 'Madde 3.4, 4.7.5.2.1, 5.13.2.1',
+        title: 'Kat/Ana Pano B Tipi 32A Sigorta ve N2XH 5x4 mm² Besleme Kablosu',
+        critical: true,
+        criteria: 'Kat panosuna (uygun değilse ana panoya) eklenen B tipi 32A sigorta üzerinden N2XH 5x4 mm² (0.6/1kV halojensiz TS HD 604 S1) kablo ile kanal içinden enerji taşınmalı ve ana panodaki sigorta "BT LAB. / YENİLİKÇİ SINIF" olarak etiketlenmelidir.'
+      },
+      {
+        id: 'E-02',
+        category: 'ENERJI',
+        scope: 'BOTH',
+        clause: 'Madde 4.7.5.1.1, 4.7.5.1.3, 4.7.5.1.5, 5.13.1',
+        title: 'Sınıf Enerji Panosu (30x40x16 cm, IP43, Yerden 160 cm, Kilitli)',
+        critical: true,
+        criteria: 'Sınıf enerji panosu 30x40x16 cm ölçülerinde, açık renk, en az IP43 sac pano olmalıdır. Sınıf kapısı girişinde (sağ veya solda) yerden 160 cm yükseklikte monte edilmeli, kapağı kilitli olmalı ve dış kapakta elektrik uyarı yazısı bulunmalıdır.'
+      },
+      {
+        id: 'E-03',
+        category: 'ENERJI',
+        scope: 'BOTH',
+        clause: 'Madde 4.6, 4.7.5.1.11, 4.7.5.1.12, 5.11, 5.13.1.11',
+        title: 'Pano Şalt Malzemeleri (3x25A Ana Sigorta, 4x25A 30mA RCD, 4x16A Linye)',
+        critical: true,
+        criteria: 'Sınıf panosunda 1 adet 3x25A B tipi 6kA ana sigorta, 1 adet 4x25A 30mA hassasiyetinde A tipi kaçak akım koruma rölesi ve 4 adet 1x16A B tipi 6kA (TS5018-1 EN 60898-1) linye sigortası bulunmalıdır. Üç fazlı okullarda dengeli faz dağılımı sağlanmalıdır.'
+      },
+      {
+        id: 'E-04',
+        category: 'ENERJI',
+        scope: 'BOTH',
+        clause: 'Madde 3.22.12, 4.7.5.1.2, 4.7.5.1.6, 4.7.5.1.8',
+        title: 'Pano İçi Renk Kodlu 2,5 mm² NYA Kablo, Yüksük/Pabuç ve İç Yalıtım Kapağı',
+        critical: true,
+        criteria: 'Pano içinde en az 2,5 mm² NYA kablo (toprak sarı-yeşil, nötr mavi, faz farklı renk) kullanılmalı; tüm sigorta ve bara bağlantılarında kablo yüksüğü/pabucu bulunmalı; açıkta iletken kalmamalı; elektriği iletmeyen/alev almayan iç koruma kapağı ve keskin kenarlarda plastik conta kullanılmalıdır.'
+      },
+      {
+        id: 'E-05',
+        category: 'ENERJI',
+        scope: 'BOTH',
+        clause: 'Madde 4.7.5.1.7, 4.7.5.1.9, 4.7.5.1.10, 5.13.1.9, 5.13.1.10',
+        title: 'Pano Kanal Girişleri (En Az 1 cm İçeride) ve Plastik Kaplı Tek Hat Şeması',
+        critical: true,
+        criteria: 'Ana besleme panoya üstten girmeli; kanallar panoya en az 1 cm girmeli ve dışarıdan hiçbir kablo görünmemelidir. Pano dış kapağı iç yüzeyindeki cepte priz, masa ve sigorta numaralarını gösteren plastik kaplı Tek Hat ve Pano Yerleşim Şeması (EK-4 / EK-5) yer almalıdır.'
+      },
+      {
+        id: 'E-06',
+        category: 'ENERJI',
+        scope: 'BOTH',
+        clause: 'Madde 4.7.5.2.2, 5.13.2.2',
+        title: 'Linye Kabloları (3x2,5 mm² Halojensiz 300/500V, Aynı Marka)',
+        critical: true,
+        criteria: 'Her bir linye grubu 3x2,5 mm² 300/500V halojensiz (IEC 60754-1/2), düşük duman yoğunluklu (IEC 61034-2) ve aleve dayanıklı (IEC 60332-1-2) kablolardan tesis edilmeli ve tüm enerji kabloları aynı marka olmalıdır.'
+      },
+      {
+        id: 'E-07',
+        category: 'ENERJI',
+        scope: 'BOTH',
+        clause: 'Madde 3.6, 3.14, 4.7.5.2.8, 4.7.5.2.11, 5.13.2.8',
+        title: '45x45 Çocuk Korumalı Topraklı Prizler (Kanal İle Aynı Marka ve Tam Oturma)',
+        critical: true,
+        criteria: 'Enerji prizleri 10/16A 250V TSE IEC 60884-1 standardında, 45x45 çocuk korumalı topraklı ve kablo kanalı ile aynı marka olmalıdır. Fiş takıp çıkarırken priz kanaldan çıkmamalıdır.'
+      },
+      {
+        id: 'E-08',
+        category: 'ENERJI',
+        scope: 'BOTH',
+        clause: 'Madde 4.7.5.2.6, 4.7.5.2.7, 5.13.2.5',
+        title: 'Prizden Prize Kablo İle Atlama ve Buat Dışı Ek Yasağı',
+        critical: true,
+        criteria: 'Priz modülleri arasında kablo ile atlama kesinlikle yapılmamalıdır (TİP2 tümleşik prizlerde yalnızca uygun aparatla en fazla 2 priz bağlanabilir). Kolon ve linye hatlarında buat dışında ek yapılmamalı, izole bant kullanılmamalıdır.'
+      },
+      {
+        id: 'E-09',
+        category: 'ENERJI',
+        scope: 'BOTH',
+        clause: 'Madde 4.7.5.2.3, 4.7.5.2.4, 4.7.5.2.5, 5.13.2.3, 5.13.2.4, 5.13.2.6',
+        title: 'Buat Montajı, Geçmeli Klemens, Elektrik Uyarı Görseli ve Linye Etiketi',
+        critical: true,
+        criteria: 'TİP2 sınıflarda kanal üstüne en az 2 vida ile sabitlenen ve kapağı 4 vidalı olan kanal dışı buat; TİP3 sınıflarda ise kanal içi buat kullanılmalıdır. Buatlar kanalla aynı marka olmalı, içinde geçmeli klemens kullanılmalı, kapağında silinmez elektrik uyarı görseli ve linye etiketi bulunmalıdır.'
+      },
+
+      // 4. AĞ (DATA) ALTYAPISI VE KABİNET
+      {
+        id: 'D-01',
+        category: 'DATA',
+        scope: 'BOTH',
+        clause: 'Madde 4.7.1.1, 4.7.1.3, 4.7.1.5, 5.12.1',
+        title: '23 AWG Katı Bakır (Solid Copper) CAT6 UTP Kablo (Çap ≥6,2 mm)',
+        critical: true,
+        criteria: 'CAT6 UTP kablo 23 AWG çıplak katı bakır iletkenli, 4 sarmal çiftli, dış çapı en az 6,2 mm (±0,3) ve LSOH/HFFR dış kılıflı olmalıdır. Kablo üzerinde ürün adı, standart, part no ve metraj bilgisi basılı olmalıdır.'
+      },
+      {
+        id: 'D-02',
+        category: 'DATA',
+        scope: 'BOTH',
+        clause: 'Madde 3.6, 3.14, 4.7.2.1',
+        title: 'CAT6 Keystone Jack ve Kapaklı Etiket Alanlı Veri Prizi',
+        critical: false,
+        criteria: 'RJ-45 Keystone Jack konnektörler ANSI/TIA 568-2.D, ISO/IEC 11801 ve EN 50173 standartlarına uygun olmalıdır. Veri prizi üzerinde etiket alanı bulunmalı ve kanala sıkıca oturmalıdır.'
+      },
+      {
+        id: 'D-03',
+        category: 'DATA',
+        scope: 'BOTH',
+        clause: 'Madde 4.4, 5.4, 5.5',
+        title: 'Sistem Odasından Bağımsız CAT6 Hat (Enerji Panosu & ET/AP Hattı Yasağı)',
+        critical: true,
+        criteria: 'İnternet bağlantısı binadaki sistem odasından CAT6 kablo ile kanal içinden taşınmalıdır. Ağ kablosu kesinlikle enerji panosu içinden geçmemeli; TİP2 laboratuvar içinde daha önce kurulmuş AP veya Etkileşimli Tahta (ET) internet hattı kesinlikle kullanılmamalıdır.'
+      },
+      {
+        id: 'D-04',
+        category: 'DATA',
+        scope: 'TIP2',
+        clause: 'Madde 4.4, 4.7.4.1, 4.7.4.2, 4.7.4.3',
+        title: '4U 19" Duvar Tipi Rack Kabinet Konumu (Yerden 160 cm) ve Düzeni',
+        critical: true,
+        criteria: 'TİP2 sınıfta 4U 19" duvar tipi kabinet öğretmen masasının karşı duvarının orta noktasına, yerden 160 cm yükseklikte monte edilmelidir. EN 61587-1 / IEC 60917 / IEC 60297 TSE ve RoHS belgeli, kilitli temperli cam kapaklı olmalı; kablolar plastik kelepçe ile düzenlenip kapak zorlanmadan kapanmalıdır.'
+      },
+      {
+        id: 'D-05',
+        category: 'DATA',
+        scope: 'TIP2',
+        clause: 'Madde 4.5',
+        title: 'Rack Kabinet Enerji Beslemesi (3x2,5 mm²) ve Gövde Koruma Topraklaması',
+        critical: true,
+        criteria: '4U kabinetin enerjisi 3x2,5 mm² halojensiz kablo ve en az ikili grup priz ile sağlanmalı; kabinetin metal gövdesi koruma topraklama hattına en az 2,5 mm² sarı-yeşil izoleli bakır iletken ile bağlanmış olmalıdır.'
+      },
+
+      // 5. TİP 2 (BT LABORATUVARI 18+1) ÖZEL ŞARTLAR
+      {
+        id: 'T2-01',
+        category: 'TIP2',
+        scope: 'TIP2',
+        clause: 'Madde 4.1, 4.2, EK-1, EK-7',
+        title: 'TİP 2 Sınıf Alanı (42-60 m²) ve 18+1 U Düzeni Yerleşim',
+        critical: false,
+        criteria: 'BT laboratuvarı 42-60 m² aralığında (farklıysa İDARE onaylı) olmalı ve altyapı 18 öğrenci + 1 öğretmen bilgisayarı için EK-1 ve EK-7 çizimlerine uygun U şeklinde, sınıf köşelerinde ölü alan kalmayacak biçimde kurulmalıdır.'
+      },
+      {
+        id: 'T2-02',
+        category: 'TIP2',
+        scope: 'TIP2',
+        clause: 'Madde 4.3, EK-6, EK-7',
+        title: 'Öğrenci Masaları Hizasında 78 cm Aralıklarla Priz ve Data Modülü Montajı',
+        critical: true,
+        criteria: 'Öğrenci masalarının eni 78 cm (78x60x70 cm) olduğundan, enerji prizi ve data modülleri kanal üzerinde 78 cm aralıklarla U formuna ve petek geçişlerine (EK-6/EK-7) uygun şekilde monte edilmelidir.'
+      },
+      {
+        id: 'T2-03',
+        category: 'TIP2',
+        scope: 'TIP2',
+        clause: 'Madde 4.6',
+        title: 'TİP 2 Priz ve Data Sayılarının Tamlığı (18+2 Enerji, 18+2 Data, Grup Prizler)',
+        critical: true,
+        criteria: 'Sınıfta her öğrenci masası hizasında 1 priz (18 adet) ve öğretmen masası yakınında 2 priz olmak üzere toplam 18+2 topraklı priz, 18+2 data prizi, 1 adet üçlü grup priz (öğretmen) ve 1 adet ikili grup priz (kabinet) eksiksiz bulunmalıdır.'
+      },
+      {
+        id: 'T2-04',
+        category: 'TIP2',
+        scope: 'TIP2',
+        clause: 'Madde 4.7.5.2.9',
+        title: 'Öğretmen Masası Balıksırtı Zeminden Geçiş ve Kanal İçi Buat Sonlandırması',
+        critical: true,
+        criteria: 'Öğretmen masası enerji ve data hattı arka duvardan zeminde balıksırtı kanal içinden masanın sağ/sol yanına taşınmalı; üçlü grup priz ve öğretmen data uçlarından birinin bağlantısı dışarıdan fiş/jack ile değil kanal içi buat kullanılarak kanal içerisinden yapılmalıdır.'
+      },
+      {
+        id: 'T2-05',
+        category: 'TIP2',
+        scope: 'TIP2',
+        clause: 'Madde 4.6, 4.7.1.2, 4.7.3.1',
+        title: '24 Port Gigabit Switch ve Patch Kablolar (18 Adet ≥150 cm, 1 Adet ≥4 m)',
+        critical: true,
+        criteria: 'Kabinet içinde en az 24 port 10/100/1000 Mbps autosense (End-of-Sale/Life olmayan) switch bulunmalı; her öğrenci bilgisayarı için en az 150 cm (18 adet) ve öğretmen bilgisayarı için en az 4 metre (1 adet) CAT6 patch kablo teslim edilmelidir.'
+      },
+      {
+        id: 'T2-06',
+        category: 'TIP2',
+        scope: 'TIP2',
+        clause: 'Madde 4.7.5.2.10',
+        title: 'TİP 2 4\'lü Linye Dağılımının Birebir Doğrulanması',
+        critical: true,
+        criteria: '1. Linye: 1-6 no\'lu öğrenci PC (6 priz); 2. Linye: 7-12 no\'lu öğrenci PC (6 priz); 3. Linye: 13-18 no\'lu öğrenci PC (6 priz); 4. Linye: Öğretmen (2 priz) ve Switch beslemesi olacak şekilde ayrılmış ve test edilmiş olmalıdır.'
+      },
+
+      // 6. TİP 3 (YENİLİKÇİ SINIF) ÖZEL ŞARTLAR
+      {
+        id: 'T3-01',
+        category: 'TIP3',
+        scope: 'TIP3',
+        clause: 'Madde 5.1, 5.2, 5.9, 5.10, EK-15',
+        title: 'TİP 3 AIO PC Duvarında 50 cm Aralıklarla 12 Adet Enerji Prizi (EK-15)',
+        critical: true,
+        criteria: 'En az 56 m² (küçükse İDARE onaylı) TİP3 sınıfta, 8 adet AIO PC için sınıf kapısının olduğu duvarda (yetersizse devamındaki duvarda) yerden 80 cm yükseklikteki 100x50 mm PVC kanal üzerine 50 cm aralıklarla 12 adet çocuk korumalı topraklı enerji prizi konumlandırılmalıdır.'
+      },
+      {
+        id: 'T3-02',
+        category: 'TIP3',
+        scope: 'TIP3',
+        clause: 'Madde 5.3, 5.4, 5.5, 5.6, EK-9',
+        title: 'Access Point (AP) Montaj Yeri (Kapıya ≥150 cm, Kanal Altı) ve Switch Etiketi',
+        critical: true,
+        criteria: 'İDARE tarafından sağlanan AP, ET kurulu duvarda sınıf kapısına en az 150 cm mesafede, kanalın hemen altında hiçbir data/enerji kablosu görünmeyecek şekilde (EK-9) monte edilmelidir. Mevcut data hattı çalışmıyorsa veya yoksa sistem odasındaki PoE switch/boş porttan CAT6 çekilmeli ve switch ucu etiketlenmelidir.'
+      },
+      {
+        id: 'T3-03',
+        category: 'TIP3',
+        scope: 'TIP3',
+        clause: 'Madde 5.8, 5.8.1, 5.8.2, 5.11, EK-10/11/12/13',
+        title: 'TİP 3 Sınıf Kurgusuna (Kurgu 1-2-3-4) Uygun Priz ve Otomatik Adaptör Kontrolü',
+        critical: true,
+        criteria: 'ET duvarında ortak olarak Dizüstü şarj dolabı için 3 priz ve 3D yazıcı için 1 priz (4 priz) bulunmalıdır. Buna ek olarak; Kurgu 2 ve 4\'te yeni PVC kanal + ET için 1 priz; Kurgu 3 ve 4\'te (PoE switch yoksa) AP için 1 priz + 12V-48V otomatik ayarlı AP adaptörü tesis edilmiş olmalıdır.'
+      },
+      {
+        id: 'T3-04',
+        category: 'TIP3',
+        scope: 'TIP3',
+        clause: 'Madde 5.13.1.10, 5.13.2.7',
+        title: 'TİP 3 4\'lü Linye Dağılımı ve Pano Alt/Üst Çıkış Yönleri',
+        critical: true,
+        criteria: '1. Linye: 1-6 no\'lu AIO PC prizleri (panonun altından çıkış); 2. Linye: 7-12 no\'lu AIO PC prizleri (panonun altından çıkış); 3. Linye: PC1, PC2, PC3 dizüstü prizleri (üstten çıkış); 4. Linye: ET, AP ve 3D yazıcı (üstten çıkış) şeklinde tesis edilmelidir.'
+      },
+      {
+        id: 'T3-05',
+        category: 'TIP3',
+        scope: 'TIP3',
+        clause: 'Madde 5.4, 5.8.1, 5.8.2, EK-16',
+        title: 'TİP 3 İlave Birim Fiyat Kalemlerinin (Metraj ve Adet) Gerçek Ölçümü',
+        critical: true,
+        criteria: 'Hakediş ödemesi gerçekleşen kullanım üzerinden yapılacağından; TİP3 sınıf için kullanılan ilave 100x50 mm PVC kanal metrajı, ilave tekli enerji prizi adedi, ilave AP adaptörü adedi ve yeni çekilen CAT6 kablo metrajı komisyonca yerinde ölçülerek tutanağa işlenmelidir.'
+      },
+
+      // 7. PYS, TUTANAKLAR, KONTROL ÇANTASI VE KABUL İŞLEMLERİ
+      {
+        id: 'M-01',
+        category: 'KABUL',
+        scope: 'BOTH',
+        clause: 'Madde 3.20, 6.2, 6.3, 6.4',
+        title: 'Proje Yönetim Sistemi (PYS) Fotoğraf, Rapor ve Tutanak Yüklemeleri',
+        critical: true,
+        criteria: 'Malzeme numunelerinin marka/model detaylı JPEG fotoğrafları, keşif ve kurulum görselleri, 15 günlük ilerleme raporları ve imzalanan kabul tutanaklarının taranmış halleri İDARE\'nin PYS sistemine eksiksiz yüklenmiş olmalıdır.'
+      },
+      {
+        id: 'M-02',
+        category: 'KABUL',
+        scope: 'BOTH',
+        clause: 'Madde 6.3, 7.3, 7.4',
+        title: 'Okul İdaresi Teslim Tutanağı ve En Az 3 Üyeli Komisyon Kabul Tutanağı',
+        critical: true,
+        criteria: 'Okul idaresi ile birlikte imzalanan ıslak imzalı ve mühürlü Teslim Tutanağı (EK-3) ile her il bünyesinde en az 3 üyeden (öncelikle Elektrik, Elektronik, Bilişim teknik öğretmeni, tekniker, teknisyen) oluşan Muayene ve Kabul Komisyonu tutanakları eksiksiz düzenlenmelidir.'
+      },
+      {
+        id: 'M-03',
+        category: 'KABUL',
+        scope: 'BOTH',
+        clause: 'Madde 3.21',
+        title: 'Merkezi Komisyon Saha Kontrol Çantası ve RCD Test Cihazı Teslimi',
+        critical: false,
+        criteria: 'Merkezi komisyonlar için saha ziyaretlerinde kullanılmak üzere; Pense (≥160mm), Yan Keski, Kargaburnu, 2 Kontrol Kalemi (135/190mm), 5 İzole Bant, 2 Düz + 2 Yıldız Tornavida (≥165mm) ve 1 adet Dijital Göstergeli Prize Takılan Kaçak Akım Röle (RCD) Test Cihazı çantasıyla İDARE\'ye teslim edilmelidir.'
+      },
+      {
+        id: 'M-04',
+        category: 'KABUL',
+        scope: 'BOTH',
+        clause: 'Madde 3.25, 7.6, 7.7, 7.8, 7.10',
+        title: '2 Yıl Garanti, 7 İş Günü Arıza SLA Süresi ve Üst Model Değişim Taahhüdü',
+        critical: false,
+        criteria: 'Kurulum 2 yıl garantili olmalı; arızalar en geç 7 iş günü içinde giderilmeli (aksi halde gün başına brüt asgari ücretin %3\'ü ceza); onarımı mümkün olmayan veya üretimden kalkan ürünler ek bedelsiz aynı markanın İDARE onaylı üst modeliyle değiştirilmelidir.'
+      }
+    ];
+
+    // Uygulama Durumu (State)
+    const STORAGE_KEY = 'meb_yegitek_muayene_kabul_v1';
+    let appState = {
+      schoolName: '',
+      classType: 'ALL',
+      tip3Scenario: 'ALL',
+      commission: '',
+      member1Name: '',
+      member1Title: '1. Komisyon Başkanı',
+      member2Name: '',
+      member2Title: '1. Uzman Üye',
+      member3Name: '',
+      member3Title: '2. Uzman Üye',
+      activeCategory: 'ALL',
+      statusFilter: 'ALL',
+      searchQuery: '',
+      checkedMap: {}, // { [itemId]: true/false }
+      notesMap: {},   // { [itemId]: string }
+      openNotesMap: {} // { [itemId]: boolean }
+    };
+
+    function syncCommissionSummary() {
+      const m1 = (appState.member1Name || '................') + ' (' + (appState.member1Title || '1. Komisyon Başkanı') + ')';
+      const m2 = (appState.member2Name || '................') + ' (' + (appState.member2Title || '1. Uzman Üye') + ')';
+      const m3 = (appState.member3Name || '................') + ' (' + (appState.member3Title || '2. Uzman Üye') + ')';
+      appState.commission = m1 + ', ' + m2 + ', ' + m3;
+      const hiddenEl = document.getElementById('inputCommission');
+      if (hiddenEl) hiddenEl.value = appState.commission;
+    }
+
+    // LocalStorage Yükleme / Kaydetme (Sandbox-safe try/catch)
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appState = Object.assign({}, appState, parsed);
+        }
+      } catch (err) {
+        // Sandbox iframe localStorage kısıtlaması durumunda bellekte çalışır
+      }
+      syncCommissionSummary();
+    }
+
+    function saveState() {
+      syncCommissionSummary();
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          schoolName: appState.schoolName,
+          classType: appState.classType,
+          tip3Scenario: appState.tip3Scenario,
+          commission: appState.commission,
+          member1Name: appState.member1Name,
+          member1Title: appState.member1Title,
+          member2Name: appState.member2Name,
+          member2Title: appState.member2Title,
+          member3Name: appState.member3Name,
+          member3Title: appState.member3Title,
+          checkedMap: appState.checkedMap,
+          notesMap: appState.notesMap
+        }));
+      } catch (err) {
+        // Ignore storage error
+      }
+    }
+
+    // Toast Bildirimi
+    let toastTimer = null;
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.remove('hidden');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2400);
+    }
+
+    // Sınıf Tipine Göre Geçerli Maddeleri Getir
+    function getItemsForCurrentClassType() {
+      return CHECKLIST_ITEMS.filter(item => {
+        if (appState.classType === 'TIP2') {
+          return item.scope === 'BOTH' || item.scope === 'TIP2';
+        }
+        if (appState.classType === 'TIP3') {
+          return item.scope === 'BOTH' || item.scope === 'TIP3';
+        }
+        return true;
+      });
+    }
+
+    // Aktif Filtrelere Göre Görünen Maddeleri Getir
+    function getFilteredItems() {
+      const baseItems = getItemsForCurrentClassType();
+      const q = (appState.searchQuery || '').trim().toLowerCase();
+
+      return baseItems.filter(item => {
+        if (appState.activeCategory !== 'ALL' && item.category !== appState.activeCategory) {
+          return false;
+        }
+        const isOn = Boolean(appState.checkedMap[item.id]);
+        if (appState.statusFilter === 'ON' && !isOn) return false;
+        if (appState.statusFilter === 'OFF' && isOn) return false;
+
+        if (q) {
+          const noteText = (appState.notesMap[item.id] || '').toLowerCase();
+          const match =
+            item.id.toLowerCase().includes(q) ||
+            item.title.toLowerCase().includes(q) ||
+            item.criteria.toLowerCase().includes(q) ||
+            item.clause.toLowerCase().includes(q) ||
+            noteText.includes(q);
+          if (!match) return false;
+        }
+        return true;
+      });
+    }
+
+    // Kurgu Bilgi Bandı Güncelleme
+    function renderScenarioBanner() {
+      const banner = document.getElementById('scenarioInfoBanner');
+      const textEl = document.getElementById('scenarioInfoText');
+      if (!banner || !textEl) return;
+
+      const scenarioDescriptions = {
+        KURGU1: 'Kurgu 1 Seçildi (EK-10): ET duvarında FATİH kanalı VAR ve sistem odasında PoE Switch VAR → Mevcut FATİH kanalı kullanılır, ET ve AP için priz konulmaz. Sadece 3 Dizüstü + 1 (3D Yazıcı) = 4 priz + 12 AIO PC prizi kontrol edilir.',
+        KURGU2: 'Kurgu 2 Seçildi (EK-11): ET duvarında FATİH kanalı YOK ve sistem odasında PoE Switch VAR → Yeni 100x50 PVC kanal kurulur; 3 Dizüstü + 1 (3D Yazıcı) + 1 ET = 5 priz + 12 AIO PC prizi kontrol edilir (İlave PVC kanal metrajı ve +1 ET prizi hakedişe girer).',
+        KURGU3: 'Kurgu 3 Seçildi (EK-12): ET duvarında FATİH kanalı VAR ve sistem odasında PoE Switch YOK → Mevcut FATİH kanalı kullanılır; 3 Dizüstü + 1 (3D Yazıcı) + 1 AP = 5 priz + 12V-48V otomatik AP adaptörü + 12 AIO PC prizi kontrol edilir.',
+        KURGU4: 'Kurgu 4 Seçildi (EK-13): ET duvarında FATİH kanalı YOK ve sistem odasında PoE Switch YOK → Yeni 100x50 PVC kanal kurulur; 3 Dizüstü + 1 (3D Yazıcı) + 1 ET + 1 AP = 6 priz + 12V-48V otomatik AP adaptörü + 12 AIO PC prizi kontrol edilir.'
+      };
+
+      if (appState.tip3Scenario !== 'ALL' && scenarioDescriptions[appState.tip3Scenario]) {
+        textEl.textContent = scenarioDescriptions[appState.tip3Scenario];
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    // Üst KPI ve İlerleme Çubuğu Güncelleme
+    function renderStats() {
+      const scopeItems = getItemsForCurrentClassType();
+      const total = scopeItems.length;
+      const onCount = scopeItems.filter(i => Boolean(appState.checkedMap[i.id])).length;
+      const offCount = total - onCount;
+      const percent = total > 0 ? Math.round((onCount / total) * 100) : 0;
+
+      document.getElementById('statTotal').textContent = String(total);
+      document.getElementById('statOnCount').textContent = String(onCount);
+      document.getElementById('statOffCount').textContent = String(offCount);
+      document.getElementById('statOnPercent').textContent = '%' + percent;
+      document.getElementById('progressBarFill').style.width = percent + '%';
+
+      const scopeLabelMap = {
+        ALL: 'TİP 2 + TİP 3 tüm maddeler',
+        TIP2: 'TİP 2 (BT Lab 18+1) kapsamı',
+        TIP3: 'TİP 3 (Yenilikçi Sınıf) kapsamı'
+      };
+      document.getElementById('statScopeSub').textContent = scopeLabelMap[appState.classType] || '';
+
+      const badge = document.getElementById('badgeAcceptance');
+      const card = document.getElementById('cardAcceptanceStatus');
+      const hint = document.getElementById('textAcceptanceHint');
+
+      if (total > 0 && onCount === total) {
+        badge.textContent = '✓ KABULE UYGUN (TAMAMLANDI)';
+        badge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white shadow-xs';
+        card.className = 'bg-emerald-50 rounded-2xl border-2 border-emerald-500 p-4 shadow-sm flex flex-col justify-between';
+        hint.textContent = 'Tüm kontrol maddeleri ON (Yeşil) durumuna getirildi. Tutanak çıktısı alabilirsiniz.';
+        hint.className = 'text-xs text-emerald-800 font-medium mt-1.5';
+      } else {
+        badge.textContent = onCount > 0 ? 'DENETİM SÜRÜYOR (%' + percent + ')' : 'KONTROL BEKLİYOR';
+        badge.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800';
+        card.className = 'bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col justify-between';
+        hint.textContent = offCount + ' madde henüz OFF durumunda. Onaylanan maddeler yeşile döner.';
+        hint.className = 'text-xs text-slate-500 mt-1.5';
+      }
+    }
+
+    // Kategori Sekmelerini Render Et
+    function renderCategoryTabs() {
+      const container = document.getElementById('categoryTabs');
+      const scopeItems = getItemsForCurrentClassType();
+
+      container.innerHTML = CATEGORIES.map(cat => {
+        // Sınıf tipine göre boş kategoriyi gizle (örn: TİP2 seçiliyse TİP3 sekmesi)
+        if (appState.classType === 'TIP2' && cat.id === 'TIP3') return '';
+        if (appState.classType === 'TIP3' && cat.id === 'TIP2') return '';
+
+        const catItems = cat.id === 'ALL'
+          ? scopeItems
+          : scopeItems.filter(i => i.category === cat.id);
+        const catOn = catItems.filter(i => Boolean(appState.checkedMap[i.id])).length;
+        const isActive = appState.activeCategory === cat.id;
+        const allDone = catItems.length > 0 && catOn === catItems.length;
+
+        const baseCls = isActive
+          ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+          : allDone
+            ? 'bg-emerald-50 text-emerald-900 border-emerald-300 hover:bg-emerald-100'
+            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100';
+
+        const countBadgeCls = isActive
+          ? 'bg-emerald-500 text-slate-950'
+          : allDone
+            ? 'bg-emerald-600 text-white'
+            : 'bg-slate-200 text-slate-700';
+
+        return `
+          <button type="button" data-cat-id="${cat.id}" class="cat-tab-btn px-3 py-1.5 rounded-xl border text-xs font-semibold transition flex items-center gap-1.5 ${baseCls}">
+            <span>${cat.icon}</span>
+            <span>${cat.name}</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[11px] font-bold ${countBadgeCls}">${catOn}/${catItems.length}</span>
+          </button>
+        `;
+      }).join('');
+
+      container.querySelectorAll('.cat-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.activeCategory = btn.getAttribute('data-cat-id');
+          renderAll();
+        });
+      });
+    }
+
+    // Durum Filtresi Buton Görünümü
+    function renderStatusFilterButtons() {
+      document.querySelectorAll('.status-filter-btn').forEach(btn => {
+        const val = btn.getAttribute('data-status-filter');
+        if (val === appState.statusFilter) {
+          btn.className = 'status-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-sm';
+        } else {
+          btn.className = 'status-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900';
+        }
+      });
+    }
+
+    // Kontrol Kartlarını Render Et
+    function renderChecklist() {
+      const container = document.getElementById('checklistContainer');
+      const items = getFilteredItems();
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl border border-slate-200 p-8 text-center space-y-2">
+            <p class="text-base font-bold text-slate-700">Eşleşen kontrol maddesi bulunamadı</p>
+            <p class="text-xs text-slate-500">Arama terimini veya ON/OFF durum filtresini sıfırlayarak tüm maddeleri görüntüleyebilirsiniz.</p>
+            <button id="btnResetFiltersEmpty" type="button" class="mt-2 px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-500">
+              Filtreleri Sıfırla
+            </button>
+          </div>
+        `;
+        const resetBtn = document.getElementById('btnResetFiltersEmpty');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            appState.activeCategory = 'ALL';
+            appState.statusFilter = 'ALL';
+            appState.searchQuery = '';
+            document.getElementById('inputSearch').value = '';
+            document.getElementById('btnClearSearch').classList.add('hidden');
+            renderAll();
+          });
+        }
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const isOn = Boolean(appState.checkedMap[item.id]);
+        const noteVal = appState.notesMap[item.id] || '';
+        const isNoteOpen = Boolean(appState.openNotesMap[item.id]) || noteVal.length > 0;
+
+        const scopeBadge = item.scope === 'TIP2'
+          ? '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-800">Sadece TİP 2 (BT Lab)</span>'
+          : item.scope === 'TIP3'
+            ? '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-purple-100 text-purple-800">Sadece TİP 3 (Yenilikçi Sınıf)</span>'
+            : '<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-700">TİP 2 & TİP 3 Ortak</span>';
+
+        const criticalBadge = item.critical
+          ? '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-800">Zorunlu / Kritik Kriter</span>'
+          : '<span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600">Standart Kriter</span>';
+
+        const statusBadge = isOn
+          ? '<span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-600 text-white">✓ UYGUN / ONAYLANDI (ON)</span>'
+          : '<span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-200 text-slate-700">KONTROL BEKLİYOR (OFF)</span>';
+
+        return `
+          <article id="card-${item.id}" class="check-card rounded-2xl border-2 p-4 sm:p-5 ${isOn ? 'state-on' : 'state-off'}">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <!-- Sol: Madde İçeriği -->
+              <div class="flex items-start gap-3.5 flex-1">
+                <button type="button" data-toggle-id="${item.id}" aria-label="${item.title} durumunu değiştir" class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 mt-0.5 transition ${isOn ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                  ${isOn ? '✓' : item.id}
+                </button>
+
+                <div class="space-y-1.5 flex-1">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-xs font-bold px-2 py-0.5 rounded ${isOn ? 'bg-emerald-200/80 text-emerald-950' : 'bg-slate-200 text-slate-800'}">
+                      ${item.id} • ${item.clause}
+                    </span>
+                    ${scopeBadge}
+                    ${criticalBadge}
+                    ${statusBadge}
+                  </div>
+
+                  <h3 class="text-sm sm:text-base font-bold ${isOn ? 'text-emerald-950' : 'text-slate-900'}">
+                    ${item.title}
+                  </h3>
+
+                  <p class="text-xs sm:text-sm leading-relaxed ${isOn ? 'text-emerald-900' : 'text-slate-600'}">
+                    ${item.criteria}
+                  </p>
+
+                  <!-- Komisyon Notu Ekleme / Gösterme -->
+                  <div class="pt-1">
+                    <button type="button" data-note-toggle="${item.id}" class="text-xs font-semibold ${isOn ? 'text-emerald-800 hover:text-emerald-950' : 'text-slate-500 hover:text-slate-800'} flex items-center gap-1">
+                      <span>✏️</span> ${noteVal ? 'Komisyon Notunu Düzenle' : 'Komisyon Notu / Ölçüm Ekle'}
+                    </button>
+                    <div id="note-box-${item.id}" class="${isNoteOpen ? 'mt-2' : 'hidden mt-2'}">
+                      <input type="text" data-note-input="${item.id}" value="${noteVal.replace(/"/g, '&quot;')}" placeholder="Örn: Ölçülen kanal yüksekliği 80 cm, RCD test cihazı ile 30mA açma doğrulandı..." class="w-full px-3 py-1.5 text-xs rounded-lg border ${isOn ? 'border-emerald-400 bg-white' : 'border-slate-300 bg-slate-50'} focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sağ: ON / OFF Butonu (On olduğunda yeşil renge dönüşür) -->
+              <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/60 shrink-0">
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked="${isOn ? 'true' : 'false'}"
+                  data-toggle-id="${item.id}"
+                  class="toggle-btn relative inline-flex items-center w-24 h-11 rounded-full border-2 px-1.5 cursor-pointer select-none focus:outline-none ${isOn ? 'on' : 'off'}"
+                >
+                  <span class="toggle-knob w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center text-xs font-extrabold ${isOn ? 'text-emerald-700' : 'text-slate-500'}">
+                    ${isOn ? 'ON' : 'OFF'}
+                  </span>
+                  <span class="text-xs font-extrabold tracking-wider ${isOn ? 'ml-1.5 mr-auto text-white' : 'ml-auto mr-2 text-slate-600'}">
+                    ${isOn ? 'AÇIK' : 'KAPALI'}
+                  </span>
+                </button>
+                <span class="text-[11px] font-semibold ${isOn ? 'text-emerald-800' : 'text-slate-400'}">
+                  ${isOn ? 'Yeşil: Kontrol Edildi' : 'Kontrol İçin Tıklayın'}
+                </span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Toggle Event Listeners
+      container.querySelectorAll('[data-toggle-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-toggle-id');
+          appState.checkedMap[id] = !Boolean(appState.checkedMap[id]);
+          saveState();
+          renderAll();
+        });
+      });
+
+      // Note Toggle Listeners
+      container.querySelectorAll('[data-note-toggle]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-note-toggle');
+          appState.openNotesMap[id] = !Boolean(appState.openNotesMap[id]);
+          const box = document.getElementById('note-box-' + id);
+          if (box) {
+            box.classList.toggle('hidden');
+            const input = box.querySelector('input');
+            if (input && !box.classList.contains('hidden')) input.focus();
+          }
+        });
+      });
+
+      // Note Input Listeners
+      container.querySelectorAll('[data-note-input]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          const id = input.getAttribute('data-note-input');
+          appState.notesMap[id] = e.target.value;
+          saveState();
+        });
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Denetim Raporu Metnini Oluştur (Sonunda 3 Ayrı Komisyon Üyesi İle)
+    function buildReportText() {
+      const scopeItems = getItemsForCurrentClassType();
+      const onItems = scopeItems.filter(i => Boolean(appState.checkedMap[i.id]));
+      const offItems = scopeItems.filter(i => !Boolean(appState.checkedMap[i.id]));
+      const nowStr = new Date().toLocaleDateString('tr-TR');
+
+      const lines = [
+        'T.C. MİLLÎ EĞİTİM BAKANLIĞI - YEĞİTEK',
+        '1200 ADET BT LABORATUVARI (TİP2) VE 505 ADET YENİLİKÇİ SINIF (TİP3) ALTYAPISI KURULUM İŞİ',
+        'MUAYENE VE KABUL KOMİSYONU SAHA KONTROL VE KABUL TUTANAĞI',
+        '========================================================================================',
+        'Tarih               : ' + nowStr,
+        'Okul / Kurum Adı    : ' + (appState.schoolName || 'Belirtilmedi'),
+        'Denetlenen Kapsam   : ' + (appState.classType === 'TIP2' ? 'TİP 2 - BT Laboratuvarı (18+1)' : appState.classType === 'TIP3' ? 'TİP 3 - Yenilikçi Sınıf' : 'TİP 2 & TİP 3 Genel'),
+        'TİP 3 Sınıf Kurgusu : ' + (appState.tip3Scenario === 'ALL' ? 'Genel' : appState.tip3Scenario),
+        'Genel İlerleme      : ' + onItems.length + ' / ' + scopeItems.length + ' Madde Onaylandı (ON - Yeşil) [%' + (scopeItems.length ? Math.round((onItems.length / scopeItems.length) * 100) : 0) + ']',
+        'Kabul Durumu        : ' + (offItems.length === 0 ? 'GEÇİCİ KABULE UYGUNDUR' : 'EKSİK / KONTROL BEKLEYEN MADDELER MEVCUT (' + offItems.length + ' Madde)'),
+        '',
+        '----------------------------------------------------------------------------------------',
+        '1. ONAYLANAN MADDELER (ON - YEŞİL) [' + onItems.length + ' ADET]',
+        '----------------------------------------------------------------------------------------'
+      ];
+
+      if (onItems.length === 0) {
+        lines.push('Henüz onaylanan (ON) madde bulunmamaktadır.');
+      } else {
+        onItems.forEach(item => {
+          const note = appState.notesMap[item.id] ? ' | Not: ' + appState.notesMap[item.id] : '';
+          lines.push('[ON - UYGUN] ' + item.id + ' (' + item.clause + ') - ' + item.title + note);
+        });
+      }
+
+      lines.push('');
+      lines.push('----------------------------------------------------------------------------------------');
+      lines.push('2. BEKLEYEN / EKSİK MADDELER (OFF) [' + offItems.length + ' ADET]');
+      lines.push('----------------------------------------------------------------------------------------');
+
+      if (offItems.length === 0) {
+        lines.push('Tüm şartname kriterleri komisyonca kontrol edilmiş ve uygun bulunmuştur.');
+      } else {
+        offItems.forEach(item => {
+          const note = appState.notesMap[item.id] ? ' | Tespit Notu: ' + appState.notesMap[item.id] : '';
+          lines.push('[OFF - BEKLİYOR] ' + item.id + ' (' + item.clause + ') - ' + item.title + note);
+        });
+      }
+
+      lines.push('');
+      lines.push('========================================================================================');
+      lines.push('MUAYENE VE KABUL KOMİSYONU ÜYELERİ (PDF SONU İMZA BÖLÜMÜ)');
+      lines.push('========================================================================================');
+      lines.push('1. Komisyon Başkanı : ' + (appState.member1Name || '................................') + ' | Unvan: ' + (appState.member1Title || '1. Komisyon Başkanı') + ' | İmza: .................');
+      lines.push('1. Uzman Üye        : ' + (appState.member2Name || '................................') + ' | Unvan: ' + (appState.member2Title || '1. Uzman Üye') + ' | İmza: .................');
+      lines.push('2. Uzman Üye        : ' + (appState.member3Name || '................................') + ' | Unvan: ' + (appState.member3Title || '2. Uzman Üye') + ' | İmza: .................');
+
+      return lines.join('\n');
+    }
+
+    // Görsel A4 Tutanak HTML'ini Oluştur (Hem Modal Önizleme hem Yazdırma için, sonunda 3 Ayrı Komisyon Bölümü)
+    function buildVisualReportHTML() {
+      const scopeItems = getItemsForCurrentClassType();
+      const onItems = scopeItems.filter(i => Boolean(appState.checkedMap[i.id]));
+      const offItems = scopeItems.filter(i => !Boolean(appState.checkedMap[i.id]));
+      const percent = scopeItems.length ? Math.round((onItems.length / scopeItems.length) * 100) : 0;
+      const nowStr = new Date().toLocaleDateString('tr-TR');
+      const scopeText = appState.classType === 'TIP2'
+        ? 'TİP 2 — BT Laboratuvarı (18+1)'
+        : appState.classType === 'TIP3'
+          ? 'TİP 3 — Yenilikçi Sınıf'
+          : 'TİP 2 & TİP 3 Tüm Maddeler';
+
+      const rowsHtml = scopeItems.map(item => {
+        const isOn = Boolean(appState.checkedMap[item.id]);
+        const note = appState.notesMap[item.id] ? '<div class="text-[11px] text-slate-600 mt-0.5 italic">Not: ' + escapeHtml(appState.notesMap[item.id]) + '</div>' : '';
+        return `
+          <tr class="border-b border-slate-200 ${isOn ? 'bg-emerald-50/70' : 'bg-white'}">
+            <td class="py-2 px-2.5 font-bold text-xs ${isOn ? 'text-emerald-900' : 'text-slate-700'} whitespace-nowrap">${escapeHtml(item.id)}</td>
+            <td class="py-2 px-2.5 text-xs text-slate-600 whitespace-nowrap">${escapeHtml(item.clause)}</td>
+            <td class="py-2 px-2.5 text-xs text-slate-900">
+              <div class="font-semibold">${escapeHtml(item.title)}</div>
+              ${note}
+            </td>
+            <td class="py-2 px-2.5 text-center whitespace-nowrap">
+              <span class="inline-block px-2 py-0.5 rounded text-[11px] font-bold ${isOn ? 'bg-emerald-600 text-white' : 'bg-amber-100 text-amber-800'}">
+                ${isOn ? 'ON • UYGUN' : 'OFF • BEKLİYOR'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      return `
+        <div class="space-y-5 text-slate-900">
+          <!-- Resmi Başlık -->
+          <div class="text-center border-b-2 border-slate-800 pb-4 space-y-1">
+            <p class="text-xs font-bold tracking-widest uppercase text-slate-600">T.C. MİLLÎ EĞİTİM BAKANLIĞI • YENİLİK VE EĞİTİM TEKNOLOJİLERİ GENEL MÜDÜRLÜĞÜ</p>
+            <h3 class="text-base sm:text-lg font-extrabold text-slate-900">
+              1200 ADET BT LABORATUVARI (TİP2) VE 505 ADET YENİLİKÇİ SINIF (TİP3) ALTYAPISI KURULUM İŞİ
+            </h3>
+            <p class="text-sm font-bold text-emerald-800">MUAYENE VE KABUL KOMİSYONU KONTROL VE KABUL TUTANAĞI</p>
+          </div>
+
+          <!-- Künye Bilgileri -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <div><span class="font-bold text-slate-600">Okul / Kurum Adı:</span> <span class="font-semibold text-slate-900">${escapeHtml(appState.schoolName || '................................................')}</span></div>
+            <div><span class="font-bold text-slate-600">Denetim Tarihi:</span> <span class="font-semibold text-slate-900">${nowStr}</span></div>
+            <div><span class="font-bold text-slate-600">Denetlenen Kapsam:</span> <span class="font-semibold text-slate-900">${escapeHtml(scopeText)} (${escapeHtml(appState.tip3Scenario)})</span></div>
+            <div><span class="font-bold text-slate-600">Onay Durumu:</span> <span class="font-bold ${offItems.length === 0 ? 'text-emerald-700' : 'text-amber-700'}">${onItems.length} / ${scopeItems.length} Madde ON (Yeşil) — %${percent}</span></div>
+          </div>
+
+          <!-- Kontrol Listesi Tablosu -->
+          <div class="border border-slate-300 rounded-xl overflow-hidden">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-800 text-white text-xs">
+                  <th class="py-2 px-2.5 font-semibold">Kod</th>
+                  <th class="py-2 px-2.5 font-semibold">Şartname Md.</th>
+                  <th class="py-2 px-2.5 font-semibold">Kontrol Kriteri & Komisyon Notu</th>
+                  <th class="py-2 px-2.5 font-semibold text-center">Durum</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- PDF Sonu: Komisyon Üyeleri 3 Ayrı İmza Bölümü -->
+          <div class="pt-4 border-t-2 border-slate-800">
+            <p class="text-xs font-bold uppercase tracking-wider text-center text-slate-700 mb-3">
+              MUAYENE VE KABUL KOMİSYONU ÜYELERİ
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <!-- 1. Komisyon Başkanı -->
+              <div class="border-2 border-slate-300 rounded-xl p-3.5 text-center bg-slate-50/70 flex flex-col justify-between min-h-[130px]">
+                <div>
+                  <div class="text-xs font-extrabold uppercase tracking-wide text-emerald-900 bg-emerald-100 py-1 px-2 rounded mb-2">
+                    1. Komisyon Başkanı
+                  </div>
+                  <p class="text-xs font-bold text-slate-900">${escapeHtml(appState.member1Name || '........................................')}</p>
+                  <p class="text-[11px] text-slate-600 mt-0.5">${escapeHtml(appState.member1Title || '1. Komisyon Başkanı')}</p>
+                </div>
+                <div class="pt-6 mt-3 border-t border-dashed border-slate-300 text-[11px] text-slate-500 font-medium">
+                  İmza
+                </div>
+              </div>
+
+              <!-- 1. Uzman Üye -->
+              <div class="border-2 border-slate-300 rounded-xl p-3.5 text-center bg-slate-50/70 flex flex-col justify-between min-h-[130px]">
+                <div>
+                  <div class="text-xs font-extrabold uppercase tracking-wide text-blue-900 bg-blue-100 py-1 px-2 rounded mb-2">
+                    1. Uzman Üye
+                  </div>
+                  <p class="text-xs font-bold text-slate-900">${escapeHtml(appState.member2Name || '........................................')}</p>
+                  <p class="text-[11px] text-slate-600 mt-0.5">${escapeHtml(appState.member2Title || '1. Uzman Üye')}</p>
+                </div>
+                <div class="pt-6 mt-3 border-t border-dashed border-slate-300 text-[11px] text-slate-500 font-medium">
+                  İmza
+                </div>
+              </div>
+
+              <!-- 2. Uzman Üye -->
+              <div class="border-2 border-slate-300 rounded-xl p-3.5 text-center bg-slate-50/70 flex flex-col justify-between min-h-[130px]">
+                <div>
+                  <div class="text-xs font-extrabold uppercase tracking-wide text-purple-900 bg-purple-100 py-1 px-2 rounded mb-2">
+                    2. Uzman Üye
+                  </div>
+                  <p class="text-xs font-bold text-slate-900">${escapeHtml(appState.member3Name || '........................................')}</p>
+                  <p class="text-[11px] text-slate-600 mt-0.5">${escapeHtml(appState.member3Title || '2. Uzman Üye')}</p>
+                </div>
+                <div class="pt-6 mt-3 border-t border-dashed border-slate-300 text-[11px] text-slate-500 font-medium">
+                  İmza
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Doğrudan Tarayıcıda Çok Sayfalı A4 PDF Oluştur ve İndir (Canvas Iframe Sandbox Uyumlu, Türkçe Karakter Tam Destekli)
+    function generateAndDownloadPDF() {
+      const feedback = document.getElementById('copyFeedbackText');
+      if (feedback) feedback.textContent = '⏳ PDF dosyası hazırlanıyor...';
+
+      try {
+        const scopeItems = getItemsForCurrentClassType();
+        const onItems = scopeItems.filter(i => Boolean(appState.checkedMap[i.id]));
+        const offItems = scopeItems.filter(i => !Boolean(appState.checkedMap[i.id]));
+        const percent = scopeItems.length ? Math.round((onItems.length / scopeItems.length) * 100) : 0;
+        const nowStr = new Date().toLocaleDateString('tr-TR');
+        const scopeText = appState.classType === 'TIP2'
+          ? 'TİP 2 - BT Laboratuvarı (18+1)'
+          : appState.classType === 'TIP3'
+            ? 'TİP 3 - Yenilikçi Sınıf'
+            : 'TİP 2 & TİP 3 Tüm Maddeler';
+
+        // Yüksek çözünürlüklü A4 Canvas boyutları (1240 x 1754 px @ 150 DPI)
+        const PAGE_W = 1240;
+        const PAGE_H = 1754;
+        const MARGIN = 64;
+        const CONTENT_W = PAGE_W - MARGIN * 2;
+
+        const pages = [];
+        let currentCanvas = null;
+        let ctx = null;
+        let y = MARGIN;
+
+        function startNewPage() {
+          currentCanvas = document.createElement('canvas');
+          currentCanvas.width = PAGE_W;
+          currentCanvas.height = PAGE_H;
+          ctx = currentCanvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+          pages.push(currentCanvas);
+          y = MARGIN;
+        }
+
+        function wrapTextLines(text, maxWidth, font) {
+          ctx.font = font;
+          const words = String(text || '').split(/\s+/);
+          const lines = [];
+          let cur = '';
+          for (let i = 0; i < words.length; i++) {
+            const test = cur ? cur + ' ' + words[i] : words[i];
+            if (ctx.measureText(test).width > maxWidth && cur) {
+              lines.push(cur);
+              cur = words[i];
+            } else {
+              cur = test;
+            }
+          }
+          if (cur) lines.push(cur);
+          return lines.length ? lines : [''];
+        }
+
+        startNewPage();
+
+        // Üst Başlık Bandı
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(MARGIN, y, CONTENT_W, 118);
+        ctx.fillStyle = '#10b981';
+        ctx.fillRect(MARGIN, y + 112, CONTENT_W, 6);
+
+        ctx.fillStyle = '#a7f3d0';
+        ctx.font = 'bold 17px Inter, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('T.C. MİLLÎ EĞİTİM BAKANLIĞI • YENİLİK VE EĞİTİM TEKNOLOJİLERİ GENEL MÜDÜRLÜĞÜ', PAGE_W / 2, y + 34);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 21px Inter, Arial, sans-serif';
+        ctx.fillText('1200 BT LABORATUVARI (TİP2) VE 505 YENİLİKÇİ SINIF (TİP3) KURULUM İŞİ', PAGE_W / 2, y + 66);
+
+        ctx.fillStyle = '#34d399';
+        ctx.font = 'bold 18px Inter, Arial, sans-serif';
+        ctx.fillText('MUAYENE VE KABUL KOMİSYONU KONTROL VE KABUL TUTANAĞI', PAGE_W / 2, y + 96);
+
+        y += 136;
+
+        // Künye Kutusu
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(MARGIN, y, CONTENT_W, 92);
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(MARGIN, y, CONTENT_W, 92);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#334155';
+        ctx.font = 'bold 17px Inter, Arial, sans-serif';
+        ctx.fillText('Okul / Kurum Adı : ' + (appState.schoolName || 'Belirtilmedi'), MARGIN + 20, y + 34);
+        ctx.fillText('Denetlenen Kapsam: ' + scopeText + ' (' + appState.tip3Scenario + ')', MARGIN + 20, y + 68);
+
+        ctx.fillText('Tarih: ' + nowStr, MARGIN + 680, y + 34);
+        ctx.fillStyle = offItems.length === 0 ? '#047857' : '#b45309';
+        ctx.fillText('Sonuç: ' + onItems.length + '/' + scopeItems.length + ' ON (Yeşil) [%' + percent + ']', MARGIN + 680, y + 68);
+
+        y += 112;
+
+        // Tablo Başlığı
+        function drawTableHeader() {
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(MARGIN, y, CONTENT_W, 42);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 16px Inter, Arial, sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText('Kod', MARGIN + 14, y + 27);
+          ctx.fillText('Şartname Md.', MARGIN + 105, y + 27);
+          ctx.fillText('Kontrol Kriteri ve Komisyon Notu', MARGIN + 290, y + 27);
+          ctx.textAlign = 'center';
+          ctx.fillText('Durum', MARGIN + CONTENT_W - 85, y + 27);
+          y += 42;
+        }
+
+        drawTableHeader();
+
+        // Tablo Satırları
+        scopeItems.forEach((item) => {
+          const isOn = Boolean(appState.checkedMap[item.id]);
+          const noteStr = appState.notesMap[item.id] ? 'Not: ' + appState.notesMap[item.id] : '';
+          const titleLines = wrapTextLines(item.title, CONTENT_W - 470, 'bold 16px Inter, Arial, sans-serif');
+          const critLines = wrapTextLines(item.criteria, CONTENT_W - 470, '14px Inter, Arial, sans-serif');
+          const noteLines = noteStr ? wrapTextLines(noteStr, CONTENT_W - 470, 'italic 14px Inter, Arial, sans-serif') : [];
+
+          const rowH = Math.max(54, 18 + titleLines.length * 20 + critLines.length * 18 + noteLines.length * 18);
+
+          if (y + rowH > PAGE_H - MARGIN - 60) {
+            startNewPage();
+            drawTableHeader();
+          }
+
+          ctx.fillStyle = isOn ? '#ecfdf5' : '#ffffff';
+          ctx.fillRect(MARGIN, y, CONTENT_W, rowH);
+          ctx.strokeStyle = isOn ? '#6ee7b7' : '#e2e8f0';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(MARGIN, y, CONTENT_W, rowH);
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = isOn ? '#065f46' : '#1e293b';
+          ctx.font = 'bold 16px Inter, Arial, sans-serif';
+          ctx.fillText(item.id, MARGIN + 14, y + 28);
+
+          ctx.fillStyle = '#475569';
+          ctx.font = '14px Inter, Arial, sans-serif';
+          const clauseLines = wrapTextLines(item.clause, 170, '14px Inter, Arial, sans-serif');
+          clauseLines.forEach((cl, idx) => {
+            ctx.fillText(cl, MARGIN + 105, y + 26 + idx * 18);
+          });
+
+          let textY = y + 24;
+          ctx.fillStyle = isOn ? '#064e3b' : '#0f172a';
+          ctx.font = 'bold 16px Inter, Arial, sans-serif';
+          titleLines.forEach(tl => {
+            ctx.fillText(tl, MARGIN + 290, textY);
+            textY += 20;
+          });
+
+          ctx.fillStyle = isOn ? '#047857' : '#475569';
+          ctx.font = '14px Inter, Arial, sans-serif';
+          critLines.forEach(cl => {
+            ctx.fillText(cl, MARGIN + 290, textY);
+            textY += 18;
+          });
+
+          if (noteLines.length > 0) {
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'italic 14px Inter, Arial, sans-serif';
+            noteLines.forEach(nl => {
+              ctx.fillText(nl, MARGIN + 290, textY);
+              textY += 18;
+            });
+          }
+
+          // Durum Rozeti (ON olduğunda Yeşil)
+          const badgeW = 140;
+          const badgeH = 30;
+          const badgeX = MARGIN + CONTENT_W - badgeW - 15;
+          const badgeY = y + 12;
+          ctx.fillStyle = isOn ? '#059669' : '#fef3c7';
+          ctx.fillRect(badgeX, badgeY, badgeW, badgeH);
+          ctx.fillStyle = isOn ? '#ffffff' : '#92400e';
+          ctx.font = 'bold 14px Inter, Arial, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(isOn ? 'ON • UYGUN' : 'OFF • BEKLİYOR', badgeX + badgeW / 2, badgeY + 20);
+
+          y += rowH;
+        });
+
+        // PDF SONU: 3 AYRI KOMİSYON ÜYESİ BÖLÜMÜ (1. Komisyon Başkanı, 1. Uzman Üye, 2. Uzman Üye)
+        const sigBlockH = 260;
+        if (y + sigBlockH > PAGE_H - MARGIN - 40) {
+          startNewPage();
+        } else {
+          y += 28;
+        }
+
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(MARGIN, y, CONTENT_W, 38);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 17px Inter, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('MUAYENE VE KABUL KOMİSYONU ÜYELERİ (İMZA BÖLÜMÜ)', PAGE_W / 2, y + 25);
+        y += 52;
+
+        const boxGap = 24;
+        const boxW = Math.floor((CONTENT_W - boxGap * 2) / 3);
+        const boxH = 190;
+
+        const members = [
+          {
+            header: '1. Komisyon Başkanı',
+            headerBg: '#d1fae5',
+            headerColor: '#065f46',
+            name: appState.member1Name || '....................................',
+            title: appState.member1Title || '1. Komisyon Başkanı'
+          },
+          {
+            header: '1. Uzman Üye',
+            headerBg: '#dbeafe',
+            headerColor: '#1e40af',
+            name: appState.member2Name || '....................................',
+            title: appState.member2Title || '1. Uzman Üye'
+          },
+          {
+            header: '2. Uzman Üye',
+            headerBg: '#f3e8ff',
+            headerColor: '#6b21a8',
+            name: appState.member3Name || '....................................',
+            title: appState.member3Title || '2. Uzman Üye'
+          }
+        ];
+
+        members.forEach((m, idx) => {
+          const bx = MARGIN + idx * (boxW + boxGap);
+          ctx.fillStyle = '#f8fafc';
+          ctx.fillRect(bx, y, boxW, boxH);
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(bx, y, boxW, boxH);
+
+          // Üye Başlık Şeridi
+          ctx.fillStyle = m.headerBg;
+          ctx.fillRect(bx + 2, y + 2, boxW - 4, 36);
+          ctx.fillStyle = m.headerColor;
+          ctx.font = 'bold 16px Inter, Arial, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(m.header, bx + boxW / 2, y + 26);
+
+          // Ad Soyad
+          ctx.fillStyle = '#0f172a';
+          ctx.font = 'bold 16px Inter, Arial, sans-serif';
+          ctx.fillText('Adı Soyadı: ' + m.name, bx + boxW / 2, y + 72);
+
+          // Unvan
+          ctx.fillStyle = '#475569';
+          ctx.font = '14px Inter, Arial, sans-serif';
+          const tLines = wrapTextLines('Unvanı: ' + m.title, boxW - 24, '14px Inter, Arial, sans-serif');
+          tLines.slice(0, 2).forEach((tl, tIdx) => {
+            ctx.fillText(tl, bx + boxW / 2, y + 98 + tIdx * 18);
+          });
+
+          // İmza Çizgisi
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(bx + 30, y + 148);
+          ctx.lineTo(bx + boxW - 30, y + 148);
+          ctx.stroke();
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = 'bold 14px Inter, Arial, sans-serif';
+          ctx.fillText('İmza', bx + boxW / 2, y + 172);
+        });
+
+        // Sayfa numaralarını ekle
+        pages.forEach((canvasPage, pIdx) => {
+          const pCtx = canvasPage.getContext('2d');
+          pCtx.fillStyle = '#64748b';
+          pCtx.font = '14px Inter, Arial, sans-serif';
+          pCtx.textAlign = 'right';
+          pCtx.fillText('Sayfa ' + (pIdx + 1) + ' / ' + pages.length, PAGE_W - MARGIN, PAGE_H - 24);
+          pCtx.textAlign = 'left';
+          pCtx.fillText('MEB YEĞİTEK Muayene ve Kabul Komisyonu Kontrol Tutanağı', MARGIN, PAGE_H - 24);
+        });
+
+        // Canvas sayfalarını çok sayfalı PDF 1.4 binary formatına dönüştür
+        const pdfBlob = canvasesToPdfBlob(pages);
+        const url = URL.createObjectURL(pdfBlob);
+        const a = document.createElement('a');
+        const safeSchool = (appState.schoolName || 'Okul').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 30);
+        a.href = url;
+        a.download = 'Muayene_Kabul_Tutanagi_' + (safeSchool || 'Rapor') + '.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+        if (feedback) feedback.textContent = '✓ PDF dosyası başarıyla oluşturuldu ve indirildi!';
+        showToast('PDF dosyası (sonunda 3 komisyon üyesi imza bölümüyle) indirildi.');
+      } catch (err) {
+        if (feedback) feedback.textContent = 'PDF oluşturulurken hata: ' + err.message;
+      }
+    }
+
+    // JPEG Canvas sayfalarını standart çok sayfalı A4 PDF (595.28 x 841.89 pt) dosyasına paketleyen saf JS motoru
+    function canvasesToPdfBlob(canvasList) {
+      const pdfW = 595.28;
+      const pdfH = 841.89;
+      const objects = [];
+
+      function strToBytes(str) {
+        const arr = new Uint8Array(str.length);
+        for (let i = 0; i < str.length; i++) {
+          arr[i] = str.charCodeAt(i) & 0xff;
+        }
+        return arr;
+      }
+
+      function dataUrlToBytes(dataUrl) {
+        const base64 = dataUrl.split(',')[1];
+        const bin = atob(base64);
+        return strToBytes(bin);
+      }
+
+      const pageCount = canvasList.length;
+      const pageObjIds = [];
+      let nextId = 3;
+
+      const pageEntries = canvasList.map((cnv) => {
+        const imgId = nextId++;
+        const contentId = nextId++;
+        const pageId = nextId++;
+        pageObjIds.push(pageId);
+        const jpegBytes = dataUrlToBytes(cnv.toDataURL('image/jpeg', 0.92));
+        return { cnv, imgId, contentId, pageId, jpegBytes };
+      });
+
+      objects.push({ id: 1, parts: [strToBytes('<< /Type /Catalog /Pages 2 0 R >>')] });
+      const kidsStr = pageObjIds.map(id => id + ' 0 R').join(' ');
+      objects.push({ id: 2, parts: [strToBytes('<< /Type /Pages /Kids [ ' + kidsStr + ' ] /Count ' + pageCount + ' >>')] });
+
+      pageEntries.forEach(entry => {
+        const imgHeader = '<< /Type /XObject /Subtype /Image /Width ' + entry.cnv.width + ' /Height ' + entry.cnv.height + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + entry.jpegBytes.length + ' >>\nstream\n';
+        const imgFooter = '\nendstream';
+        objects.push({
+          id: entry.imgId,
+          parts: [strToBytes(imgHeader), entry.jpegBytes, strToBytes(imgFooter)]
+        });
+
+        const contentStream = 'q\n' + pdfW.toFixed(2) + ' 0 0 ' + pdfH.toFixed(2) + ' 0 0 cm\n/Im1 Do\nQ';
+        const contentHeader = '<< /Length ' + contentStream.length + ' >>\nstream\n' + contentStream + '\nendstream';
+        objects.push({
+          id: entry.contentId,
+          parts: [strToBytes(contentHeader)]
+        });
+
+        const pageStr = '<< /Type /Page /Parent 2 0 R /MediaBox [ 0 0 ' + pdfW.toFixed(2) + ' ' + pdfH.toFixed(2) + ' ] /Resources << /XObject << /Im1 ' + entry.imgId + ' 0 R >> >> /Contents ' + entry.contentId + ' 0 R >>';
+        objects.push({
+          id: entry.pageId,
+          parts: [strToBytes(pageStr)]
+        });
+      });
+
+      objects.sort((a, b) => a.id - b.id);
+
+      const chunks = [];
+      let offset = 0;
+      function pushBytes(b) {
+        chunks.push(b);
+        offset += b.length;
+      }
+
+      pushBytes(strToBytes('%PDF-1.4\n%\xFF\xFF\xFF\xFF\n'));
+      const offsets = [0];
+
+      objects.forEach(obj => {
+        offsets[obj.id] = offset;
+        pushBytes(strToBytes(obj.id + ' 0 obj\n'));
+        obj.parts.forEach(p => pushBytes(p));
+        pushBytes(strToBytes('\nendobj\n'));
+      });
+
+      const xrefOffset = offset;
+      const totalObjs = objects.length + 1;
+      let xref = 'xref\n0 ' + totalObjs + '\n0000000000 65535 f \n';
+      for (let i = 1; i < totalObjs; i++) {
+        xref += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
+      }
+      xref += 'trailer\n<< /Size ' + totalObjs + ' /Root 1 0 R >>\nstartxref\n' + xrefOffset + '\n%%EOF';
+      pushBytes(strToBytes(xref));
+
+      return new Blob(chunks, { type: 'application/pdf' });
+    }
+
+    // Tüm Görünümü Yenile
+    function renderAll() {
+      renderScenarioBanner();
+      renderStats();
+      renderCategoryTabs();
+      renderStatusFilterButtons();
+      renderChecklist();
+    }
+
+    // Başlangıç Olay Dinleyicileri
+    function initApp() {
+      loadState();
+
+      const inputSchool = document.getElementById('inputSchoolName');
+      const selectType = document.getElementById('selectClassType');
+      const selectScenario = document.getElementById('selectTip3Scenario');
+      const inputComm = document.getElementById('inputCommission');
+      const inputM1Name = document.getElementById('inputMember1Name');
+      const inputM1Title = document.getElementById('inputMember1Title');
+      const inputM2Name = document.getElementById('inputMember2Name');
+      const inputM2Title = document.getElementById('inputMember2Title');
+      const inputM3Name = document.getElementById('inputMember3Name');
+      const inputM3Title = document.getElementById('inputMember3Title');
+      const inputSearch = document.getElementById('inputSearch');
+      const btnClearSearch = document.getElementById('btnClearSearch');
+
+      inputSchool.value = appState.schoolName || '';
+      selectType.value = appState.classType || 'ALL';
+      selectScenario.value = appState.tip3Scenario || 'ALL';
+      inputComm.value = appState.commission || '';
+      inputM1Name.value = appState.member1Name || '';
+      inputM1Title.value = appState.member1Title || '';
+      inputM2Name.value = appState.member2Name || '';
+      inputM2Title.value = appState.member2Title || '';
+      inputM3Name.value = appState.member3Name || '';
+      inputM3Title.value = appState.member3Title || '';
+
+      inputM1Name.addEventListener('input', (e) => { appState.member1Name = e.target.value; saveState(); });
+      inputM1Title.addEventListener('input', (e) => { appState.member1Title = e.target.value; saveState(); });
+      inputM2Name.addEventListener('input', (e) => { appState.member2Name = e.target.value; saveState(); });
+      inputM2Title.addEventListener('input', (e) => { appState.member2Title = e.target.value; saveState(); });
+      inputM3Name.addEventListener('input', (e) => { appState.member3Name = e.target.value; saveState(); });
+      inputM3Title.addEventListener('input', (e) => { appState.member3Title = e.target.value; saveState(); });
+
+      inputSchool.addEventListener('input', (e) => {
+        appState.schoolName = e.target.value;
+        saveState();
+      });
+
+      selectType.addEventListener('change', (e) => {
+        appState.classType = e.target.value;
+        if (appState.classType === 'TIP2' && appState.activeCategory === 'TIP3') {
+          appState.activeCategory = 'ALL';
+        }
+        if (appState.classType === 'TIP3' && appState.activeCategory === 'TIP2') {
+          appState.activeCategory = 'ALL';
+        }
+        saveState();
+        renderAll();
+      });
+
+      selectScenario.addEventListener('change', (e) => {
+        appState.tip3Scenario = e.target.value;
+        saveState();
+        renderAll();
+      });
+
+      inputComm.addEventListener('input', (e) => {
+        appState.commission = e.target.value;
+        saveState();
+      });
+
+      inputSearch.addEventListener('input', (e) => {
+        appState.searchQuery = e.target.value;
+        if (appState.searchQuery.length > 0) {
+          btnClearSearch.classList.remove('hidden');
+        } else {
+          btnClearSearch.classList.add('hidden');
+        }
+        renderChecklist();
+      });
+
+      btnClearSearch.addEventListener('click', () => {
+        appState.searchQuery = '';
+        inputSearch.value = '';
+        btnClearSearch.classList.add('hidden');
+        renderChecklist();
+      });
+
+      // Durum Filtresi Butonları
+      document.querySelectorAll('.status-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          appState.statusFilter = btn.getAttribute('data-status-filter');
+          renderAll();
+        });
+      });
+
+      // Görünenleri ON Yap
+      document.getElementById('btnTurnVisibleOn').addEventListener('click', () => {
+        const visible = getFilteredItems();
+        visible.forEach(item => {
+          appState.checkedMap[item.id] = true;
+        });
+        saveState();
+        renderAll();
+        showToast(visible.length + ' kontrol maddesi ON (Yeşil) durumuna getirildi.');
+      });
+
+      // Tümünü OFF Yap
+      document.getElementById('btnTurnAllOff').addEventListener('click', () => {
+        appState.checkedMap = {};
+        saveState();
+        renderAll();
+        showToast('Tüm kontrol maddeleri OFF durumuna sıfırlandı.');
+      });
+
+      // Referans Tabloları Modalı
+      const modalRef = document.getElementById('modalRefTables');
+      document.getElementById('btnOpenRefModal').addEventListener('click', () => {
+        modalRef.classList.remove('hidden');
+      });
+      document.getElementById('btnCloseRefModal').addEventListener('click', () => {
+        modalRef.classList.add('hidden');
+      });
+      modalRef.addEventListener('click', (e) => {
+        if (e.target === modalRef) modalRef.classList.add('hidden');
+      });
+
+      // Rapor Modalı
+      const modalReport = document.getElementById('modalReport');
+      document.getElementById('btnOpenReportModal').addEventListener('click', () => {
+        const visualHtml = buildVisualReportHTML();
+        document.getElementById('pdfPreviewVisual').innerHTML = visualHtml;
+        document.getElementById('printAreaContainer').innerHTML = visualHtml;
+        document.getElementById('reportTextOutput').textContent = buildReportText();
+        document.getElementById('copyFeedbackText').textContent = '';
+        modalReport.classList.remove('hidden');
+      });
+      document.getElementById('btnCloseReportModal').addEventListener('click', () => {
+        modalReport.classList.add('hidden');
+      });
+      modalReport.addEventListener('click', (e) => {
+        if (e.target === modalReport) modalReport.classList.add('hidden');
+      });
+
+      // Raporu Kopyala
+      document.getElementById('btnCopyReport').addEventListener('click', () => {
+        const text = buildReportText();
+        const feedback = document.getElementById('copyFeedbackText');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            feedback.textContent = '✓ Denetim raporu panoya kopyalandı!';
+          }).catch(() => {
+            fallbackCopyText(text, feedback);
+          });
+        } else {
+          fallbackCopyText(text, feedback);
+        }
+      });
+
+      // Doğrudan PDF Olarak İndir (.pdf) ve Yazdır
+      document.getElementById('btnPrintReport').addEventListener('click', () => {
+        const visualHtml = buildVisualReportHTML();
+        document.getElementById('printAreaContainer').innerHTML = visualHtml;
+        generateAndDownloadPDF();
+      });
+
+      renderAll();
+    }
+
+    function fallbackCopyText(text, feedbackEl) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        if (feedbackEl) feedbackEl.textContent = '✓ Denetim raporu panoya kopyalandı!';
+      } catch (err) {
+        if (feedbackEl) feedbackEl.textContent = 'Metni seçerek kopyalayabilirsiniz.';
+      }
+      document.body.removeChild(ta);
+    }
+
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
